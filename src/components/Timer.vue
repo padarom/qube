@@ -25,6 +25,14 @@ export default {
     }
   },
 
+  mounted () {
+    window.addEventListener('keydown', event => {
+      if (event.key === ' ') {
+        this.toggleTimer()
+      }
+    }, true)
+  },
+
   methods: {
     toggleTimer () {
       if (this.timer) {
