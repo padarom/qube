@@ -1,18 +1,34 @@
 <template>
-  <div class="hello">
+  <div>
     <div class="timer">
       <h2>
-        {{ elapsed.minutes | padded }}:{{ elapsed.seconds | padded }}.{{ elapsed.milliseconds | padded }}</h2>
+        {{ elapsed.minutes | padded }}:{{ elapsed.seconds | padded }}.{{ elapsed.milliseconds | padded }}
+      </h2>
     </div>
     <aside class="hint" @click="toggleTimer">
       Press <kbd>Spacebar</kbd> to start.
     </aside>
+
+    <aside>
+      <recorded-time :time="1" uuid="abc-def"></recorded-time>
+      <recorded-time :time="100" uuid="abc-def"></recorded-time>
+      <recorded-time :time="10090" uuid="abc-def"></recorded-time>
+      <recorded-time :time="15020" uuid="abc-def"></recorded-time>
+      <recorded-time :time="70030" uuid="abc-def"></recorded-time>
+    </aside>
+
   </div>
 </template>
 
 <script>
+import RecordedTime from './RecordedTime'
+
 export default {
   name: 'HelloWorld',
+
+  components: {
+    'recorded-time': RecordedTime
+  },
 
   data () {
     return {
@@ -56,7 +72,6 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   .timer h2 {
     font-family: 'Anonymous Pro', monospace;
