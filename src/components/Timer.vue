@@ -8,8 +8,6 @@
 
 <script>
 export default {
-  name: 'Timer',
-
   data () {
     return {
       elapsed: {

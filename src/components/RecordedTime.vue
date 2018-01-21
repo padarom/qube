@@ -4,8 +4,6 @@
 
 <script>
 export default {
-  name: 'RecordedTime',
-
   props: {
     // UUID for this singular time, so that we can later identify it with the API
     uuid: {
