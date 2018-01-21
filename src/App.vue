@@ -11,23 +11,26 @@
 
     <Timer></Timer>
 
+    <nav class="navigation">
+      <ul>
+        <li>Login</li>
+        <li>Show all times</li>
+      </ul>
+    </nav>
+
     <aside class="hint">
-      Press <kbd>Spacebar</kbd> to start.
+      <span>
+        Press <kbd>Spacebar</kbd> to start the timer
+      </span>
     </aside>
 
-    <aside class="last-times">
-      <RecordedTime :time="1" uuid="abc-def"></RecordedTime>
-      <RecordedTime :time="100" uuid="abc-def"></RecordedTime>
-      <RecordedTime :time="10090" uuid="abc-def"></RecordedTime>
-      <RecordedTime :time="15020" uuid="abc-def"></RecordedTime>
-      <RecordedTime :time="70030" uuid="abc-def"></RecordedTime>
-    </aside>
+    <Statistics />
   </div>
 </template>
 
 <script>
 import Particle, { Shapes } from '&/BackgroundParticle'
-import RecordedTime from '&/RecordedTime'
+import Statistics from '&/Statistics'
 import Timer from '&/Timer'
 import $ from 'jquery'
 
@@ -35,7 +38,7 @@ export default {
   name: 'App',
 
   components: {
-    Particle, RecordedTime, Timer
+    Particle, Timer, Statistics
   },
 
   data () {
@@ -62,7 +65,7 @@ export default {
       this.objects.push({
         id: this.createdObjects++,
         x: Math.random() * $(window).width(),
-        y: $(window).height() - 100,
+        y: $(window).height(),
         shape: Shapes[Math.floor(Math.random() * Shapes.length)]
       })
     },
@@ -79,11 +82,68 @@ export default {
 </script>
 
 <style>
+body, html {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  height: 100%;
+}
+
+.hint {
+  position: absolute;
+  width: 100%;
+
+  bottom: 20px;
+  text-align: center;
+
+  font-size: 14px;
+}
+
+kbd {
+  display: inline-block;
+  padding: 4px 6px 4px 8px;
+  margin: 0 2px;
+  border: 1px solid #dedede;
+  border-radius: 3px;
+
+  font-family: 'Anonymous Pro', monospace;
+  font-weight: 400;
+}
+
+.background {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.navigation {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.navigation ul {
+  list-style: none;
+  padding: 0;
+  margin: 16px;
+}
+
+.navigation li {
+  display: inline-block;
+  margin-left: 20px;
 }
 </style>

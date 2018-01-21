@@ -99,9 +99,9 @@ export default {
         return
       }
 
-      let height = $(this.$refs.svg).height()
+      let height = $(this.$refs.svg).height() * this.scale
 
-      if (this.y < -height) {
+      if (this.y < -(height * 2)) { // Some extra margin for error
         this.destroy()
       }
 
