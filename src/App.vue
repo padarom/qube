@@ -29,7 +29,8 @@
 </template>
 
 <script>
-import Particle, { Shapes } from '&/BackgroundParticle'
+import Particle from '&/BackgroundParticle'
+import { AvailableShapes as Shapes } from '&/Particles/Shapes'
 import Statistics from '&/Statistics'
 import Timer from '&/Timer'
 import $ from 'jquery'
