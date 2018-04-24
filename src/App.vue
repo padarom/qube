@@ -13,7 +13,7 @@
 
     <nav class="navigation">
       <ul>
-        <li>Login</li>
+        <li data-netlify-identity-button></li>
         <li>Show all times</li>
       </ul>
     </nav>
@@ -146,5 +146,9 @@ kbd {
 .navigation li {
   display: inline-block;
   margin-left: 20px;
+}
+
+.navigation .netlify-identity-button {
+  color: green !important;
 }
 </style>
