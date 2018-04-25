@@ -13,7 +13,7 @@
 
     <nav class="navigation">
       <ul>
-        <li data-netlify-identity-button></li>
+        <li>Login</li>
         <li>Show all times</li>
       </ul>
     </nav>
@@ -34,6 +34,8 @@ import { AvailableShapes as Shapes } from '&/Particles/Shapes'
 import Statistics from '&/Statistics'
 import Timer from '&/Timer'
 import $ from 'jquery'
+import firebase from 'firebase'
+require('firebase/firestore')
 
 export default {
   name: 'App',
@@ -51,6 +53,20 @@ export default {
   },
 
   mounted () {
+    /*
+    const provider = new firebase.auth.GithubAuthProvider()
+    provider.addScope('user:email')
+    firebase.auth().signInWithPopup(provider).then((result) => {
+      const uid = result.user.uid
+      const db = firebase.firestore()
+
+      db.collection(uid).add({
+        date: Date.now(),
+        speed: 146
+      })
+    })
+    */
+
     window.onblur = () => { this.spawnParticles = false }
     window.onfocus = () => { this.spawnParticles = true }
 
