@@ -1,0 +1,13 @@
+language: node_js
+node_js:
+  - "node"
+script: yarn build
+notifications:
+  email: false
+deploy:
+  skip_cleanup: true
+  provider: firebase
+  project: "qube-timer"
+  message: "TravisCI triggered deployment"
+  token:
+    secure: Mbwr1Nozc8uVW0nTkTeuRt0cd0qoOaih6Cy9CXAhlAQPCNbO/qj1r5Djwy8La6zbm8R/Ozapr297fmqxS16HG3UG7SBm4mmpclFZTrToNTig7NYuMgPu9Spc4ta7bHBCBaby67Ydc7WajNv7D6MRCRs8zRon9kW9XzhdQHZEFYobsmh44/39n3w5xSnmDtbNw6mjdTKi0IW7KQyZGnqYX9ZKRDvWlPy4VBu1EK+/F8ayv2jmnsecKfA78rhX17d0S5fNs83NjGoY8msRQtOs1W0SegSFNdyZgjEryAnEfH7t53yu6LAOLqFIcOjvqiuo3IAi+ifWAQAoyEfrxr2XtR2gqvzxyR137Qzdm2xOHsIDE06EU6f8zRLbilmJm7reYHs1nw6pGX4fvgFlm5UoJeQY54gB2f0Mw9DI9IjnuxHF6UUr9UNdMXV+yPqTAOp5e4A54UKbJgG5AlCRycmhTVyCvw9UgxUdXyi+WEo4r1kdPvwodYPyECtNfe1xFVZ12449UE3uKNLPOrCn0nM0JLIPftWtUOYsbXkzIqCwh6wtW8MYy6DrqDBbF3iMDN4FWSQ39rFHaciXL2bNH5cGnwEXvta5X6yFw3I3PgjtYdMOhKpypw9Bpj4CoyeL4mNV7Ug24dqM4r6mapTxKF38ML/6ueFBKpDtS87nVHWczss=
