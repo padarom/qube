@@ -1,4 +1,0 @@
-[build]
-  publish = "/dist"
-  functions = "/functions"
-  command = "yarn deploy"
