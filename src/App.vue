@@ -13,7 +13,8 @@
 
     <nav class="navigation">
       <ul>
-        <li>Login</li>
+        <li v-if="user">{{ user.displayName ? user.displayName : user.email }}</li>
+        <li v-else @click="$refs.login.open()">Login</li>
         <li>Show all times</li>
       </ul>
     </nav>
@@ -25,38 +26,40 @@
     </aside>
 
     <Statistics />
+
+    <sweet-modal ref="login" id="auth-container">This is an alert.</sweet-modal>
   </div>
 </template>
 
 <script>
 import Particle from '&/BackgroundParticle'
 import { AvailableShapes as Shapes } from '&/Particles/Shapes'
+import { SweetModal } from 'sweet-modal-vue'
 import Statistics from '&/Statistics'
 import Timer from '&/Timer'
 import $ from 'jquery'
 import firebase from 'firebase'
+import firebaseui from 'firebaseui'
 require('firebase/firestore')
 
 export default {
   name: 'App',
 
   components: {
-    Particle, Timer, Statistics
+    Particle, Timer, Statistics, SweetModal
   },
 
   data () {
     return {
       createdObjects: 0,
       spawnParticles: true,
-      objects: []
+      objects: [],
+      user: null
     }
   },
 
   mounted () {
     /*
-    const provider = new firebase.auth.GithubAuthProvider()
-    provider.addScope('user:email')
-    firebase.auth().signInWithPopup(provider).then((result) => {
       const uid = result.user.uid
       const db = firebase.firestore()
 
@@ -64,16 +67,40 @@ export default {
         date: Date.now(),
         speed: 146
       })
-    })
     */
 
     window.onblur = () => { this.spawnParticles = false }
     window.onfocus = () => { this.spawnParticles = true }
 
     window.setInterval(this.createParticles.bind(this), 300)
+
+    firebase.auth().onAuthStateChanged((user) => { this.user = user })
+    this.setupFirebaseUI()
   },
 
   methods: {
+    setupFirebaseUI () {
+      const ui = new firebaseui.auth.AuthUI(firebase.auth())
+
+      ui.start('#auth-container', {
+        signInOptions: [
+          firebase.auth.EmailAuthProvider.PROVIDER_ID,
+          {
+            provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+            scopes: ['email']
+          },
+          {
+            provider: firebase.auth.GithubAuthProvider.PROVIDER_ID,
+            scopes: ['user:email']
+          },
+          {
+            provider: firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+            scopes: ['email']
+          }
+        ]
+      })
+    },
+
     createParticles () {
       if (!this.spawnParticles) {
         return
