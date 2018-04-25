@@ -32,12 +32,11 @@
 </template>
 
 <script>
-import Particle from '&/BackgroundParticle'
+import Particle from '&/Particles/BackgroundParticle'
 import { AvailableShapes as Shapes } from '&/Particles/Shapes'
 import { SweetModal } from 'sweet-modal-vue'
 import Statistics from '&/Statistics'
 import Timer from '&/Timer'
-import $ from 'jquery'
 import firebase from 'firebase'
 import firebaseui from 'firebaseui'
 require('firebase/firestore')
@@ -108,8 +107,8 @@ export default {
 
       this.objects.push({
         id: this.createdObjects++,
-        x: Math.random() * $(window).width(),
-        y: $(window).height(),
+        x: Math.random() * window.innerWidth,
+        y: window.innerHeight,
         shape: Shapes[Math.floor(Math.random() * Shapes.length)]
       })
     },
@@ -189,9 +188,5 @@ kbd {
 .navigation li {
   display: inline-block;
   margin-left: 20px;
-}
-
-.navigation .netlify-identity-button {
-  color: green !important;
 }
 </style>

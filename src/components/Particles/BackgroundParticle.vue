@@ -9,7 +9,7 @@
 
 <script>
 import $ from 'jquery'
-import ShapeDefinitions from './Particles/Shapes'
+import ShapeDefinitions from './Shapes'
 
 export default {
   props: {

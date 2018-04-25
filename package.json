@@ -12,9 +12,7 @@
   },
   "dependencies": {
     "firebase": "^4.13.1",
-    "firebase-tools": "^3.18.4",
     "firebaseui": "^2.7.0",
-    "jquery": "^3.3.1",
     "node-sass": "^4.7.2",
     "sass-loader": "^6.0.6",
     "sweet-modal-vue": "^2.0.0",
@@ -65,7 +63,27 @@
     "webpack": "^3.6.0",
     "webpack-bundle-analyzer": "^2.9.0",
     "webpack-dev-server": "^2.9.1",
-    "webpack-merge": "^4.1.0"
+    "webpack-merge": "^4.1.0",
+    "firebase-tools": "^3.18.4"
+  },
+  "postcss": {
+    "plugins": {
+      "postcss-import": {},
+      "postcss-url": {},
+      "autoprefixer": {}
+    }
+  },
+  "babel": {
+    "presets": [
+      ["env", {
+        "modules": false,
+        "targets": {
+          "browsers": ["> 1%", "last 2 versions", "not ie <= 8"]
+        }
+      }],
+      "stage-2"
+    ],
+    "plugins": ["transform-vue-jsx", "transform-runtime"]
   },
   "engines": {
     "node": ">= 6.0.0",

@@ -1,4 +1,3 @@
-<script>
 let ShapeDefinitions = {
   circle: {
     viewbox: '0 0 13 12',
@@ -27,6 +26,4 @@ let ShapeDefinitions = {
 }
 
 export const AvailableShapes = Object.keys(ShapeDefinitions)
-
 export default ShapeDefinitions
-</script>
