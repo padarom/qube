@@ -1,0 +1,4 @@
+# This is the output folder for Netlify functions. Only transpiled files should be in here.
+
+*
+!.gitignore
