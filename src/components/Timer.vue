@@ -15,26 +15,32 @@ export default {
         seconds: 0,
         minutes: 0
       },
-      timer: null
+      timer: null,
+      stopped: false
     }
   },
 
   mounted () {
     window.addEventListener('keydown', event => {
+      if (event.key === ' ' && this.timer) {
+        this.stopTimer()
+        this.stopped = true
+      }
+    }, true)
+
+    window.addEventListener('keyup', event => {
       if (event.key === ' ') {
-        this.toggleTimer()
+        if (this.stopped) {
+          this.stopped = false
+        } else {
+          this.startTimer()
+        }
       }
     }, true)
   },
 
   methods: {
-    toggleTimer () {
-      if (this.timer) {
-        window.clearInterval(this.timer)
-        this.timer = null
-        return
-      }
-
+    startTimer () {
       this.timer = window.setInterval(() => {
         if (++this.elapsed.milliseconds >= 100) {
           if (++this.elapsed.seconds >= 60) {
@@ -45,6 +51,11 @@ export default {
           this.elapsed.milliseconds = 0
         }
       }, 10)
+    },
+
+    stopTimer () {
+      window.clearInterval(this.timer)
+      this.timer = null
     }
   }
 }
