@@ -27,7 +27,9 @@
 
     <Statistics />
 
-    <sweet-modal ref="login" id="auth-container">This is an alert.</sweet-modal>
+    <sweet-modal ref="login" width="300px">
+      <div id="auth-container"></div>
+    </sweet-modal>
   </div>
 </template>
 
@@ -83,9 +85,12 @@ export default {
 
       ui.start('#auth-container', {
         signInOptions: [
-          firebase.auth.EmailAuthProvider.PROVIDER_ID,
           {
             provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+            scopes: ['email']
+          },
+          {
+            provider: firebase.auth.FacebookAuthProvider.PROVIDER_ID,
             scopes: ['email']
           },
           {
@@ -93,8 +98,7 @@ export default {
             scopes: ['user:email']
           },
           {
-            provider: firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-            scopes: ['email']
+            provider: firebase.auth.TwitterAuthProvider.PROVIDER_ID
           }
         ]
       })
@@ -124,69 +128,6 @@ export default {
 }
 </script>
 
-<style>
-body, html {
-  height: 100%;
-  margin: 0;
-  overflow: hidden;
-}
-
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  height: 100%;
-}
-
-.hint {
-  position: absolute;
-  width: 100%;
-
-  bottom: 20px;
-  text-align: center;
-
-  font-size: 14px;
-}
-
-kbd {
-  display: inline-block;
-  padding: 4px 6px 4px 8px;
-  margin: 0 2px;
-  border: 1px solid #dedede;
-  border-radius: 3px;
-
-  font-family: 'Anonymous Pro', monospace;
-  font-weight: 400;
-}
-
-.background {
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-.navigation {
-  position: absolute;
-  right: 0;
-  top: 0;
-}
-
-.navigation ul {
-  list-style: none;
-  padding: 0;
-  margin: 16px;
-}
-
-.navigation li {
-  display: inline-block;
-  margin-left: 20px;
-}
+<style lang="scss">
+  @import './scss/app';
 </style>

@@ -1,0 +1,61 @@
+.firebaseui-idp-list {
+    padding: 0;
+}
+
+.firebaseui-list-item {
+    display: inline-block;
+}
+
+.firebaseui-idp-button {
+    position: relative;
+    border-radius: 4px;
+    background: #eee;
+    border: none;
+    cursor: pointer;
+
+    width: 200px;
+    height: 50px;
+}
+
+.firebaseui-idp-button span { display: none; }
+
+.firebaseui-idp-button::before {
+    content: "";
+    position: absolute;
+    color: white;
+    font-size: 28px;
+    font-family: "Font Awesome 5 Brands";
+    left: 20px;
+    top: 11px;
+}
+
+.firebaseui-idp-facebook {
+    background: $brand-facebook;
+    &:hover { background: lighten($brand-facebook, 5%); }
+    &::before { 
+        content: "\f39e";
+        left: 24px;
+    }
+}
+
+.firebaseui-idp-twitter {
+    background: $brand-twitter;
+    &:hover { background: lighten($brand-twitter, 5%); }
+    &::before { content: "\f099"; }
+}
+
+.firebaseui-idp-github {
+    background: $brand-github;
+    &:hover { background: lighten($brand-github, 5%); }
+    &::before { content: "\f09b"; }
+}
+
+.firebaseui-idp-google {
+    background: $brand-google;
+    &:hover { background: lighten($brand-google, 5%); }
+    &::before { content: "\f1a0"; }
+}
+
+.sweet-modal .sweet-content {
+    padding-bottom: 32px !important;
+}
