@@ -7,6 +7,8 @@
 </template>
 
 <script>
+import KeyboardTimer from './TimingMethods/KeyboardTimer'
+
 export default {
   data () {
     return {
@@ -15,31 +17,24 @@ export default {
         seconds: 0,
         minutes: 0
       },
-      timer: null,
-      stopped: false
+      timer: null
     }
   },
 
   mounted () {
-    window.addEventListener('keydown', event => {
-      if (event.key === ' ' && this.timer) {
-        this.stopTimer()
-        this.stopped = true
-      }
-    }, true)
-
-    window.addEventListener('keyup', event => {
-      if (event.key === ' ') {
-        if (this.stopped) {
-          this.stopped = false
-        } else {
-          this.startTimer()
-        }
-      }
-    }, true)
+    let timer = new KeyboardTimer()
+    timer.onStart = this.startTimer
+    timer.onStop = this.stopTimer
+    timer.onReset = this.resetTimer
   },
 
   methods: {
+    resetTimer () {
+      this.elapsed.milliseconds = 0
+      this.elapsed.seconds = 0
+      this.elapsed.minutes = 0
+    },
+
     startTimer () {
       this.timer = window.setInterval(() => {
         if (++this.elapsed.milliseconds >= 100) {
