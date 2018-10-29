@@ -41,7 +41,7 @@ import Statistics from '&/Statistics'
 import Timer from '&/Timer'
 import firebase from 'firebase'
 import firebaseui from 'firebaseui'
-require('firebase/firestore')
+require('@firebase/firestore')
 
 export default {
   name: 'App',
