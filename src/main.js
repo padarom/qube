@@ -8,13 +8,13 @@ import padded from './filters/Padded'
 import timeDisplay from './filters/TimeDisplay'
 
 firebase.initializeApp({
-  apiKey: 'AIzaSyBykYa61kZAhjQTmUUYjLIVN7UvUeYfXrc',
-  authDomain: 'qube-timer.firebaseapp.com',
-  databaseURL: 'https://qube-timer.firebaseio.com',
-  projectId: 'qube-timer',
-  storageBucket: 'qube-timer.appspot.com',
-  messagingSenderId: '155102122747',
-  timestampsInSnapshots: true
+    apiKey: 'AIzaSyBykYa61kZAhjQTmUUYjLIVN7UvUeYfXrc',
+    authDomain: 'qube-timer.firebaseapp.com',
+    databaseURL: 'https://qube-timer.firebaseio.com',
+    projectId: 'qube-timer',
+    storageBucket: 'qube-timer.appspot.com',
+    messagingSenderId: '155102122747',
+    timestampsInSnapshots: true
 })
 
 Vue.filter('padded', padded)
@@ -24,7 +24,7 @@ Vue.config.productionTip = false
 
 /* eslint-disable no-new */
 new Vue({
-  el: '#app',
-  components: { App },
-  template: '<App/>'
+    el: '#app',
+    components: { App },
+    template: '<App/>'
 })
