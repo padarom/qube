@@ -35,16 +35,16 @@
 
 <script>
 import BackgroundAnimation from '&/BackgroundAnimation'
-import { SweetModal } from 'sweet-modal-vue'
 import Statistics from '&/Statistics'
 import Timer from '&/Timer'
+
+import { SweetModal } from 'sweet-modal-vue'
 import firebase from 'firebase'
 import firebaseui from 'firebaseui'
+
 require('@firebase/firestore')
 
 export default {
-    name: 'App',
-
     components: {
         BackgroundAnimation, Timer, Statistics, SweetModal
     },
@@ -85,21 +85,10 @@ export default {
 
             ui.start('#auth-container', {
                 signInOptions: [
-                    {
-                        provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-                        scopes: ['email']
-                    },
-                    {
-                        provider: firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-                        scopes: ['email']
-                    },
-                    {
-                        provider: firebase.auth.GithubAuthProvider.PROVIDER_ID,
-                        scopes: ['user:email']
-                    },
-                    {
-                        provider: firebase.auth.TwitterAuthProvider.PROVIDER_ID
-                    }
+                    { provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID, scopes: ['email'] },
+                    { provider: firebase.auth.FacebookAuthProvider.PROVIDER_ID, scopes: ['email'] },
+                    { provider: firebase.auth.GithubAuthProvider.PROVIDER_ID, scopes: ['user:email'] },
+                    { provider: firebase.auth.TwitterAuthProvider.PROVIDER_ID }
                 ]
             })
         }
