@@ -1,13 +1,6 @@
 <template>
     <div id="app">
-        <div class="background">
-            <Particle v-for="object in objects" :key="object.id"
-                :shape="object.shape"
-                :initialX="object.x"
-                :initialY="object.y"
-                :destroy="destroyParticle(object)"
-            />
-        </div>
+        <BackgroundAnimation />
 
         <div class="">
             <select v-model="mode">
@@ -41,8 +34,7 @@
 </template>
 
 <script>
-import Particle from '&/Particles/BackgroundParticle'
-import { AvailableShapes as Shapes } from '&/Particles/Shapes'
+import BackgroundAnimation from '&/BackgroundAnimation'
 import { SweetModal } from 'sweet-modal-vue'
 import Statistics from '&/Statistics'
 import Timer from '&/Timer'
@@ -54,16 +46,7 @@ export default {
     name: 'App',
 
     components: {
-        Particle, Timer, Statistics, SweetModal
-    },
-
-    data () {
-        return {
-            createdObjects: 0,
-            spawnParticles: true,
-            objects: [],
-            user: null
-        }
+        BackgroundAnimation, Timer, Statistics, SweetModal
     },
 
     mounted () {
@@ -77,12 +60,7 @@ export default {
             })
         */
 
-        window.onblur = () => { this.spawnParticles = false }
-        window.onfocus = () => { this.spawnParticles = true }
-
-        window.setInterval(this.createParticles.bind(this), 300)
-
-        firebase.auth().onAuthStateChanged((user) => { this.user = user })
+        firebase.auth().onAuthStateChanged(user => this.$store.commit('setUser', user))
         this.setupFirebaseUI()
     },
 
@@ -94,6 +72,10 @@ export default {
             set (value) {
                 this.$store.commit('switchMode', value)
             }
+        },
+
+        user () {
+            return this.$store.state.user
         }
     },
 
@@ -120,27 +102,6 @@ export default {
                     }
                 ]
             })
-        },
-
-        createParticles () {
-            if (!this.spawnParticles) {
-                return
-            }
-
-            this.objects.push({
-                id: this.createdObjects++,
-                x: Math.random() * window.innerWidth,
-                y: window.innerHeight,
-                shape: Shapes[Math.floor(Math.random() * Shapes.length)]
-            })
-        },
-
-        destroyParticle (particle) {
-            return () => {
-                let object = this.objects.find(el => el.id === particle.id)
-                let index = this.objects.indexOf(object)
-                this.objects.splice(index, 1)
-            }
         }
     }
 }
