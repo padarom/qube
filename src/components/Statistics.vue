@@ -4,6 +4,8 @@
             <RecordedTime v-for="time in times" :key="time.uuid"
                 :time="time.time"
                 :uuid="time.uuid"
+                :dnf="time.dnf"
+                :penalty="time.penalty"
             />
         </div>
     </aside>
@@ -20,7 +22,7 @@ export default {
     data () {
         return {
             times: [
-                { time: 1, uuid: 'abc-def' },
+                { time: 1, uuid: 'abc-def', dnf: true },
                 { time: 100, uuid: 'abc-deg' },
                 { time: 10090, uuid: 'abc-deh' },
                 { time: 15020, uuid: 'abc-dei' },

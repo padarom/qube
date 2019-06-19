@@ -1,5 +1,10 @@
 <template>
-    <div>{{ time | timeDisplay }}</div>
+    <div class="recorded-time">
+        <span class="flag dnf" v-if="dnf">DNF</span>
+        <span class="flag penalty" v-if="penalty">+2</span>
+
+        <span class="time">{{ time | timeDisplay }}</span>
+    </div>
 </template>
 
 <script>
@@ -32,10 +37,30 @@ export default {
 }
 </script>
 
-<style>
-.recorded-time {
-    font-family: 'Anonymous Pro', monospace;
-    font-size: 10px;
-}
+<style lang="scss">
+@import '../scss/variables';
 
+.recorded-time {
+    font-size: 20px;
+    text-align: right;
+    margin-bottom: 3px;
+    font-weight: bold;
+    letter-spacing: 1px;
+
+    .flag {
+        font-size: 11px;
+        margin-right: 3px;
+        opacity: 0.9;
+    }
+
+    &:last-of-type {
+        margin-bottom: 0;
+    }
+
+    @for $i from 1 through 5 {
+        &:nth-of-type(#{$i}) {
+            color: lighten($color-primary, $i * 12%);
+        }
+    }
+}
 </style>

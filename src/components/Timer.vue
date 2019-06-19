@@ -1,6 +1,6 @@
 <template>
     <div class="timer">
-        <h1>
+        <h1 class="time">
             {{ elapsed.minutes | padded }}:{{ elapsed.seconds | padded }}.{{ elapsed.milliseconds | padded }}
         </h1>
     </div>
@@ -59,7 +59,6 @@ export default {
 <style scoped>
     .timer h1 {
         margin: 0;
-        font-family: 'Anonymous Pro', monospace;
         font-size: 100px;
     }
 </style>
