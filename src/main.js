@@ -6,6 +6,7 @@ import firebase from 'firebase'
 import App from './App'
 import padded from './filters/Padded'
 import timeDisplay from './filters/TimeDisplay'
+import store from './store'
 
 firebase.initializeApp({
     apiKey: 'AIzaSyBykYa61kZAhjQTmUUYjLIVN7UvUeYfXrc',
@@ -26,5 +27,6 @@ Vue.config.productionTip = false
 new Vue({
     el: '#app',
     components: { App },
-    template: '<App/>'
+    template: '<App/>',
+    store
 })

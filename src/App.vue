@@ -9,6 +9,13 @@
             />
         </div>
 
+        <div class="">
+            <select v-model="mode">
+                <option value="3x3">Rubik's Cube</option>
+                <option value="4x4">Rubik's Professor</option>
+            </select>
+        </div>
+
         <Timer></Timer>
 
         <nav class="navigation">
@@ -77,6 +84,17 @@ export default {
 
         firebase.auth().onAuthStateChanged((user) => { this.user = user })
         this.setupFirebaseUI()
+    },
+
+    computed: {
+        mode: {
+            get () {
+                return this.$store.state.mode
+            },
+            set (value) {
+                this.$store.commit('switchMode', value)
+            }
+        }
     },
 
     methods: {
