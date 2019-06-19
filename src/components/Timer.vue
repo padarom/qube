@@ -8,6 +8,7 @@
 
 <script>
 import KeyboardTimer from './TimingMethods/KeyboardTimer'
+import shortid from 'shortid'
 
 export default {
     data () {
@@ -51,6 +52,19 @@ export default {
         stopTimer () {
             window.clearInterval(this.timer)
             this.timer = null
+
+            this.store()
+        },
+
+        store () {
+            let record = {
+                id: shortid.generate(),
+                time: this.elapsed.minutes * 60 * 100 + this.elapsed.seconds * 100 + this.elapsed.milliseconds,
+                dnf: false,
+                penalty: false
+            }
+
+            this.$store.commit('addNewTime', record)
         }
     }
 }

@@ -10,8 +10,8 @@
 <script>
 export default {
     props: {
-        // UUID for this singular time, so that we can later identify it with the API
-        uuid: {
+        // id for this singular time, so that we can later identify it with the API
+        id: {
             type: String,
             required: true
         },
@@ -46,6 +46,7 @@ export default {
     margin-bottom: 3px;
     font-weight: bold;
     letter-spacing: 1px;
+    transition: color 1s;
 
     .flag {
         font-size: 11px;
@@ -61,6 +62,10 @@ export default {
         &:nth-of-type(#{$i}) {
             color: lighten($color-primary, $i * 12%);
         }
+    }
+
+    &:nth-of-type(n+6) {
+        color: lighten($color-primary, 5 * 12%);
     }
 }
 </style>
