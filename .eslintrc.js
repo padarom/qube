@@ -7,6 +7,7 @@ module.exports = {
   },
   env: {
     browser: true,
+    mocha: true
   },
   extends: [
     // https://github.com/vuejs/eslint-plugin-vue#priority-a-essential-error-prevention
@@ -17,7 +18,8 @@ module.exports = {
   ],
   // required to lint *.vue files
   plugins: [
-    'vue'
+    'vue',
+    'mocha'
   ],
   // add your custom rules here
   rules: {
@@ -26,6 +28,7 @@ module.exports = {
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
 
-    'no-unused-vars': process.env.NODE_ENV === 'production' ? 'error' : 'warn'
+    'no-unused-vars': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
+    indent: ['warn', 4]
   }
 }
