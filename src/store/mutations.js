@@ -12,5 +12,11 @@ export default {
         times.splice(0, 0, record)
 
         state.times = times
+    },
+
+    updateTime (state, record) {
+        state.times = state.times.map((time) => {
+            return (time.id !== record.id) ? time : record
+        })
     }
 }

@@ -1,7 +1,7 @@
 <template>
     <div class="recorded-time">
-        <span class="flag dnf" v-if="dnf">DNF</span>
-        <span class="flag penalty" v-if="penalty">+2</span>
+        <span class="flag dnf" v-if="time.dnf">DNF</span>
+        <span class="flag penalty" v-if="time.penalty">+2</span>
 
         <span class="time">{{ time | timeDisplay }}</span>
     </div>
@@ -10,28 +10,9 @@
 <script>
 export default {
     props: {
-        // id for this singular time, so that we can later identify it with the API
-        id: {
-            type: String,
-            required: true
-        },
-
-        // The recorded time in hundredth of seconds (10ms)
         time: {
-            type: Number,
+            type: Object,
             required: true
-        },
-
-        // A flag designating whether the time should be counted as DNF
-        dnf: {
-            type: Boolean,
-            default: false
-        },
-
-        // A flag designating whether a +2 seconds penalty was added to the time
-        penalty: {
-            type: Boolean,
-            default: false
         }
     }
 }

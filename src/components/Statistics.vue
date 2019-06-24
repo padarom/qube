@@ -1,12 +1,7 @@
 <template>
     <aside class="statistics">
         <transition-group tag="div" name="list" class="last-times">
-            <RecordedTime v-for="time in times" :key="time.id"
-                :time="time.time"
-                :id="time.id"
-                :dnf="time.dnf"
-                :penalty="time.penalty"
-            />
+            <RecordedTime v-for="time in times" :key="time.id" :time="time" />
         </transition-group>
     </aside>
 </template>
@@ -42,7 +37,7 @@ export default {
         position: relative;
         z-index: 3;
         opacity: 0;
-        margin-bottom: -30px;
+        margin-bottom: -27px;
     }
 
     .list-leave-to {
