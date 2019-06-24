@@ -23,7 +23,6 @@ export default {
                     {
                         label: '',
                         data: this.times
-                            .filter(time => !!time.timestamp)
                             .map(time => ({
                                 x: time.timestamp,
                                 y: time.time
@@ -37,7 +36,7 @@ export default {
             return {
                 tooltips: {
                     callbacks: {
-                        label: (item) => this.timeDisplay(item.yLabel)
+                        label: item => this.timeDisplay(item.yLabel)
                     }
                 },
                 scales: {

@@ -17,12 +17,6 @@ export interface State {
 export default (): State =>  ({
     mode: '3x3',
     timingMethod: 'keyboard',
-    times: [
-        { time: 1, id: 'abc-def', dnf: true, timestamp: new Date() },
-        { time: 100, id: 'abc-deg', timestamp: new Date() },
-        { time: 10090, id: 'abc-deh', timestamp: new Date() },
-        { time: 15020, id: 'abc-dei', timestamp: new Date() },
-        { time: 170030, id: 'abc-dej', timestamp: new Date() }
-    ],
+    times: [],
     user: null
 })

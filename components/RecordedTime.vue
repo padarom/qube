@@ -35,9 +35,9 @@ export default {
     &:last-of-type
         margin-bottom: 0
 
-    // for num in (1..5)
-        // &:nth-of-type({num})
-        //    color: lighten({$color-primary}, {num} * 12%)
+    for num in (1..5)
+        &:nth-of-type({num})
+            color: lighten($color-primary, num * 12%)
 
     &:nth-of-type(n+6)
         color: lighten($color-primary, 5 * 12%)
