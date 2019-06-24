@@ -28,7 +28,7 @@
         <RecentTimes />
 
         <sweet-modal ref="statistics">
-            <Statistics v-if="$refs.statistics && $refs.statistics.is_open" />
+            <StatisticsModalContent v-if="$refs.statistics && $refs.statistics.is_open" />
         </sweet-modal>
 
         <sweet-modal ref="login" width="300px">
@@ -40,7 +40,7 @@
 <script>
 import BackgroundAnimation from '&/BackgroundAnimation'
 import RecentTimes from '&/RecentTimes'
-import Statistics from '&/Statistics'
+import ModalContent from '&/Statistics/ModalContent'
 import Timer from '&/Timer'
 
 import { SweetModal } from 'sweet-modal-vue'
@@ -51,7 +51,7 @@ require('@firebase/firestore')
 
 export default {
     components: {
-        BackgroundAnimation, Timer, RecentTimes, SweetModal, Statistics
+        BackgroundAnimation, Timer, RecentTimes, SweetModal, StatisticsModalContent: ModalContent
     },
 
     mounted () {
