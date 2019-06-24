@@ -71,6 +71,7 @@ export default {
             let record = {
                 id: shortid.generate(),
                 time: this.elapsed.minutes * 60 * 100 + this.elapsed.seconds * 100 + this.elapsed.milliseconds,
+                timestamp: new Date(),
                 dnf: false,
                 penalty: false
             }

@@ -15,7 +15,7 @@
             <ul>
                 <li v-if="user">{{ user.displayName ? user.displayName : user.email }}</li>
                 <li v-else @click="$refs.login.open()">Login</li>
-                <li>Show all times</li>
+                <li @click="$refs.statistics.open()">Show all times</li>
             </ul>
         </nav>
 
@@ -25,7 +25,11 @@
             </span>
         </aside>
 
-        <Statistics />
+        <RecentTimes />
+
+        <sweet-modal ref="statistics">
+            <Statistics v-if="$refs.statistics && $refs.statistics.is_open" />
+        </sweet-modal>
 
         <sweet-modal ref="login" width="300px">
             <div id="auth-container"></div>
@@ -35,6 +39,7 @@
 
 <script>
 import BackgroundAnimation from '&/BackgroundAnimation'
+import RecentTimes from '&/RecentTimes'
 import Statistics from '&/Statistics'
 import Timer from '&/Timer'
 
@@ -46,7 +51,7 @@ require('@firebase/firestore')
 
 export default {
     components: {
-        BackgroundAnimation, Timer, Statistics, SweetModal
+        BackgroundAnimation, Timer, RecentTimes, SweetModal, Statistics
     },
 
     mounted () {
