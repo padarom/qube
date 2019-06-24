@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <BackgroundAnimation />
+        <BackgroundAnimation v-if="false" />
 
         <div class="">
             <select v-model="mode">
@@ -28,7 +28,7 @@
         <RecentTimes />
 
         <sweet-modal ref="statistics">
-            <StatisticsModalContent v-if="$refs.statistics && $refs.statistics.is_open" />
+            <StatisticsModalContent />
         </sweet-modal>
 
         <sweet-modal ref="login" width="300px">
@@ -42,6 +42,7 @@ import BackgroundAnimation from '~/components/BackgroundAnimation'
 import RecentTimes from '~/components/RecentTimes'
 import ModalContent from '~/components/Statistics/ModalContent'
 import Timer from '~/components/Timer'
+import { types } from '~/store/mutations'
 
 import { SweetModal } from 'sweet-modal-vue'
 import firebase from 'firebase'
@@ -65,7 +66,7 @@ export default {
             })
         */
 
-        firebase.auth().onAuthStateChanged(user => this.$store.commit('setUser', user))
+        firebase.auth().onAuthStateChanged(user => this.$store.commit(types.SET_USER, user))
         this.setupFirebaseUI()
     },
 

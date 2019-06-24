@@ -24,6 +24,7 @@
     "sweet-modal-vue": "^2.0.0",
     "ts-node": "^8.3.0",
     "vue-chartjs": "^3.4.2",
+    "vue-property-decorator": "^8.2.1",
     "vuex-persist": "^2.0.1"
   },
   "devDependencies": {
@@ -31,6 +32,9 @@
     "@nuxtjs/eslint-config": "^0.0.1",
     "@nuxtjs/eslint-module": "^0.0.1",
     "@nuxtjs/style-resources": "^0.1.2",
+    "@types/shortid": "0.0.29",
+    "@typescript-eslint/eslint-plugin": "^1.11.0",
+    "@typescript-eslint/parser": "^1.11.0",
     "babel-eslint": "^10.0.1",
     "eslint": "^5.15.1",
     "eslint-config-standard": ">=12.0.0",

@@ -1,21 +1,18 @@
 {
-    "compileOnSave": false,
     "compilerOptions": {
         "allowSyntheticDefaultImports": true,
         "lib": [
             "dom",
-            "es2015",
-            "es2016"
+            "esnext"
         ],
-        "target": "es2016",
-        "module": "es2015",
+        "target": "esnext",
+        "module": "esnext",
         "moduleResolution": "node",
-        "noImplicitAny": true,
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
-        "removeComments": false,
-        "preserveConstEnums": true,
-        "sourceMap": true,
-        "skipLibCheck": true
+        "strict": true,
+        "experimentalDecorators": true,
+        "baseUrl": ".",
+        "paths": {
+            "~": ["./"]
+        }
     }
 }

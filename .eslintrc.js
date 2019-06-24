@@ -3,7 +3,7 @@
 module.exports = {
   root: true,
   parserOptions: {
-    parser: 'babel-eslint'
+    parser: '@typescript-eslint/parser'
   },
   env: {
     browser: true
@@ -18,6 +18,7 @@ module.exports = {
   // required to lint *.vue files
   plugins: [
     'vue',
+    '@typescript-eslint'
   ],
   // add your custom rules here
   rules: {
@@ -26,7 +27,7 @@ module.exports = {
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
 
-    'no-unused-vars': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
+    'no-unused-vars': 'off', // process.env.NODE_ENV === 'production' ? 'error' : 'warn',
     indent: ['warn', 4]
   }
 }
