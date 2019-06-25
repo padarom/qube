@@ -1,8 +1,12 @@
 {
-  "name": "qube-nuxt",
+  "name": "qube",
   "version": "1.0.0",
-  "description": "My super-excellent Nuxt.js project",
+  "description": "A modern and simplistic Vue.js based speedcubing timer",
   "author": "Christopher Mühl",
+  "repository": {
+      "type": "git",
+      "url": "https://github.com/padarom/qube.git"
+  },
   "private": true,
   "scripts": {
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
