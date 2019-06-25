@@ -32,7 +32,6 @@
         </sweet-modal>
 
         <sweet-modal ref="login" width="300px">
-            <div id="auth-container"></div>
         </sweet-modal>
     </div>
 </template>
@@ -45,10 +44,6 @@ import Timer from '~/components/Timer'
 import { types } from '~/store/mutations'
 
 import { SweetModal } from 'sweet-modal-vue'
-import firebase from 'firebase'
-import firebaseui from 'firebaseui'
-
-require('@firebase/firestore')
 
 export default {
     components: {
@@ -56,18 +51,6 @@ export default {
     },
 
     mounted () {
-        /*
-            const uid = result.user.uid
-            const db = firebase.firestore()
-
-            db.collection(uid).add({
-                date: Date.now(),
-                speed: 146
-            })
-        */
-
-        firebase.auth().onAuthStateChanged(user => this.$store.commit(types.SET_USER, user))
-        this.setupFirebaseUI()
     },
 
     computed: {
@@ -82,21 +65,6 @@ export default {
 
         user () {
             return this.$store.state.user
-        }
-    },
-
-    methods: {
-        setupFirebaseUI () {
-            const ui = new firebaseui.auth.AuthUI(firebase.auth())
-
-            ui.start('#auth-container', {
-                signInOptions: [
-                    { provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID, scopes: ['email'] },
-                    { provider: firebase.auth.FacebookAuthProvider.PROVIDER_ID, scopes: ['email'] },
-                    { provider: firebase.auth.GithubAuthProvider.PROVIDER_ID, scopes: ['user:email'] },
-                    { provider: firebase.auth.TwitterAuthProvider.PROVIDER_ID }
-                ]
-            })
         }
     }
 }
