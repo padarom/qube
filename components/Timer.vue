@@ -11,6 +11,12 @@
             <button @click="togglePenalty" :class="{ active: record.penalty }">+2</button>
             <button @click="toggleDnf" :class="{ active: record.dnf }">DNF</button>
         </div>
+
+        <div class="a">
+            <span class="dot" v-for="(value, ind) in values" :key="ind" :class="`val-${value} ${ind > startIndex ? 'act' : ''}`">
+                .
+            </span>
+        </div>
     </div>
 </template>
 
@@ -33,6 +39,8 @@ class Timer extends Vue {
     record: Time | null = null
     timer: any
     elapsedMilliseconds: number = 0
+    values: any = []
+    startIndex: any = 0
 
     get elapsed () {
         let centiseconds = Math.floor(this.elapsedMilliseconds / 10)
@@ -46,12 +54,20 @@ class Timer extends Vue {
 
     mounted () {
         let timeEmitter = new TimeEmitter()
-        let method = new TimingMethods.Keyboard()
+        let method = new TimingMethods.StackMatG4()
         method.attachEmitter(timeEmitter)
 
         timeEmitter.addEventListener(TimeEmitter.Events.TIMER_RESET, () => this.resetTimer())
         timeEmitter.addEventListener(TimeEmitter.Events.TIME_UPDATED, (e) => this.updateTime(e))
         timeEmitter.addEventListener(TimeEmitter.Events.TIMER_ENDED, () => this.store())
+
+        document.addEventListener('my_custom_event', (e) => {
+            // @ts-ignore
+            let { bits, startIndex } = e.detail
+
+            this.startIndex = startIndex
+            this.$set(this, 'values', bits)
+        })
     }
 
     resetTimer () {
@@ -102,6 +118,20 @@ export default Timer
 </script>
 
 <style lang="stylus">
+    .dot
+        width: 2px
+        display: inline-block
+        position: relative
+        color: black
+
+        &.val-1
+            top: -10px
+            color: green
+        &.val--2
+            opacity: 0
+        &:not(.act)
+            color: red
+
     .timer
         position: relative
 
