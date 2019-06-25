@@ -15,7 +15,8 @@
 </template>
 
 <script lang="ts">
-import KeyboardTimer from './TimingMethods/KeyboardTimer'
+import TimingMethods from './TimingMethods'
+import TimeEmitter from './TimeEmitter'
 import shortid from 'shortid'
 import { Component, Vue } from 'vue-property-decorator'
 import { Time } from '../store/state'
@@ -31,50 +32,41 @@ type ElapsedTime = {
 class Timer extends Vue {
     record: Time | null = null
     timer: any
-    elapsed: ElapsedTime = {
-        centiseconds: 0,
-        seconds: 0,
-        minutes: 0
+    elapsedMilliseconds: number = 0
+
+    get elapsed () {
+        let centiseconds = Math.floor(this.elapsedMilliseconds / 10)
+
+        return {
+            centiseconds: centiseconds % 100,
+            seconds: Math.floor(centiseconds / 100) % 60,
+            minutes: Math.floor(centiseconds / 100 / 60)
+        }
     }
 
     mounted () {
-        let timer = new KeyboardTimer()
-        timer.onStart = this.startTimer
-        timer.onStop = this.stopTimer
-        timer.onReset = this.resetTimer
+        let timeEmitter = new TimeEmitter()
+        let method = new TimingMethods.Keyboard()
+        method.attachEmitter(timeEmitter)
+
+        timeEmitter.addEventListener(TimeEmitter.Events.TIMER_RESET, () => this.resetTimer())
+        timeEmitter.addEventListener(TimeEmitter.Events.TIME_UPDATED, (e) => this.updateTime(e))
+        timeEmitter.addEventListener(TimeEmitter.Events.TIMER_ENDED, () => this.store())
     }
 
     resetTimer () {
-        this.elapsed.centiseconds = 0
-        this.elapsed.seconds = 0
-        this.elapsed.minutes = 0
+        this.elapsedMilliseconds = 0
         this.record = null
     }
 
-    startTimer () {
-        this.timer = window.setInterval(() => {
-            if (++this.elapsed.centiseconds >= 100) {
-                if (++this.elapsed.seconds >= 60) {
-                    this.elapsed.minutes++
-                    this.elapsed.seconds = 0
-                }
-
-                this.elapsed.centiseconds = 0
-            }
-        }, 10)
-    }
-
-    stopTimer () {
-        window.clearInterval(this.timer)
-        this.timer = null
-
-        this.store()
+    updateTime (e: any) {
+        this.elapsedMilliseconds = e.detail
     }
 
     store () {
         let record = {
             id: shortid.generate(),
-            time: this.elapsed.minutes * 60 * 100 + this.elapsed.seconds * 100 + this.elapsed.centiseconds,
+            time: Math.floor(this.elapsedMilliseconds / 10),
             timestamp: new Date(),
             dnf: false,
             penalty: false,
