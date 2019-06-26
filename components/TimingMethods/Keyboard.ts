@@ -7,8 +7,16 @@ export default class Keyboard extends IntervalBasedTimer {
     constructor () {
         super()
 
-        window.addEventListener('keydown', event => this.keydown(event), true)
-        window.addEventListener('keyup', event => this.keyup(event), true)
+        this.keydown = this.keydown.bind(this)
+        this.keyup = this.keyup.bind(this)
+
+        window.addEventListener('keydown', this.keydown, true)
+        window.addEventListener('keyup', this.keyup, true)
+    }
+
+    teardown () {
+        window.removeEventListener('keydown', this.keydown, true)
+        window.removeEventListener('keyup', this.keyup, true)
     }
 
     /**

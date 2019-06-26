@@ -29,12 +29,13 @@
 </template>
 
 <script lang="ts">
-import TimingMethods from './TimingMethods'
+import TimingMethods, { AvailableTimingMethods } from './TimingMethods'
 import TimeEmitter from './TimeEmitter'
 import shortid from 'shortid'
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Watch, Vue } from 'vue-property-decorator'
 import { Time } from '../store/state'
 import { types } from '../store/mutations'
+import TimingMethod from './TimingMethods/TimingMethod'
 
 type ElapsedTime = {
     centiseconds: number,
@@ -45,8 +46,11 @@ type ElapsedTime = {
 @Component
 class Timer extends Vue {
     record: Time | null = null
-    timer: any
-    elapsedMilliseconds: number = 0
+    elapsedMilliseconds = 0
+    timeEmitter = new TimeEmitter()
+    method: TimingMethod | null = null
+
+    // Debug only
     values: any = []
     startIndex: any = 0
 
@@ -60,15 +64,26 @@ class Timer extends Vue {
         }
     }
 
+    get timingMethod (): AvailableTimingMethods {
+        return this.$store.state.timingMethod
+    }
+
+    @Watch('timingMethod', { immediate: true })
+    onTimingMethodChanged (value: AvailableTimingMethods) {
+        if (this.method) this.method.teardown()
+        delete this.method
+
+        let TimingMethodConstructor = TimingMethods[value] as any
+        this.method = new TimingMethodConstructor()
+        this.method!.attachEmitter(this.timeEmitter)
+    }
+
     mounted () {
-        let timeEmitter = new TimeEmitter()
-        let method = new TimingMethods.StackMatG4()
-        method.attachEmitter(timeEmitter)
+        this.timeEmitter.addEventListener(TimeEmitter.Events.TIMER_RESET, () => this.resetTimer())
+        this.timeEmitter.addEventListener(TimeEmitter.Events.TIME_UPDATED, (e) => this.updateTime(e))
+        this.timeEmitter.addEventListener(TimeEmitter.Events.TIMER_ENDED, () => this.store())
 
-        timeEmitter.addEventListener(TimeEmitter.Events.TIMER_RESET, () => this.resetTimer())
-        timeEmitter.addEventListener(TimeEmitter.Events.TIME_UPDATED, (e) => this.updateTime(e))
-        timeEmitter.addEventListener(TimeEmitter.Events.TIMER_ENDED, () => this.store())
-
+        // Debug only
         document.addEventListener('my_custom_event', (e) => {
             // @ts-ignore
             let { bits, startIndex } = e.detail

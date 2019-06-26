@@ -9,4 +9,8 @@ export default abstract class TimingMethod {
         return this
     }
 
+    teardown () {
+
+    }
+
 }
