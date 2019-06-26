@@ -1,22 +1,30 @@
 <template>
-    <div class="timer">
-        <h1 class="time" v-if="!record">
-            {{ elapsed.minutes | padded }}:{{ elapsed.seconds | padded }}.{{ elapsed.centiseconds | padded }}
-        </h1>
-        <h1 class="time filtered" v-else>
-            {{ record | timeDisplay }}
-        </h1>
+    <div>
+        <div class="timer">
+            <h1 class="time" v-if="!record">
+                {{ elapsed.minutes | padded }}:{{ elapsed.seconds | padded }}.{{ elapsed.centiseconds | padded }}
+            </h1>
+            <h1 class="time filtered" v-else>
+                {{ record | timeDisplay }}
+            </h1>
 
-        <div class="adjustments" v-if="record">
-            <button @click="togglePenalty" :class="{ active: record.penalty }">+2</button>
-            <button @click="toggleDnf" :class="{ active: record.dnf }">DNF</button>
+            <div class="adjustments" v-if="record">
+                <button @click="togglePenalty" :class="{ active: record.penalty }">+2</button>
+                <button @click="toggleDnf" :class="{ active: record.dnf }">DNF</button>
+            </div>
+
+            <div class="a">
+                <span class="dot" v-for="(value, ind) in values" :key="ind" :class="`val-${value} ${ind > startIndex ? 'act' : ''}`">
+                    .
+                </span>
+            </div>
         </div>
 
-        <div class="a">
-            <span class="dot" v-for="(value, ind) in values" :key="ind" :class="`val-${value} ${ind > startIndex ? 'act' : ''}`">
-                .
+        <aside class="hint">
+            <span>
+                Press <kbd>Spacebar</kbd> to start the timer
             </span>
-        </div>
+        </aside>
     </div>
 </template>
 

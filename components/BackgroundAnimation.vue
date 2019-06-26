@@ -5,6 +5,7 @@
             :initialX="object.x"
             :initialY="object.y"
             :destroy="destroyParticle(object)"
+            :delta="delta"
         />
     </div>
 </template>
@@ -20,7 +21,8 @@ export default {
         return {
             createdObjects: 0,
             spawnParticles: true,
-            objects: []
+            objects: [],
+            delta: 0
         }
     },
 
@@ -28,14 +30,17 @@ export default {
         window.onblur = () => { this.spawnParticles = false }
         window.onfocus = () => { this.spawnParticles = true }
 
-        window.setInterval(this.createParticles.bind(this), 300)
+        window.setInterval(this.createParticles.bind(this), 600)
+        window.setInterval(this.advanceParticles.bind(this), 18)
     },
 
     methods: {
         createParticles () {
-            if (!this.spawnParticles) {
+            if (!this.spawnParticles || this.objects.length > 40) {
                 return
             }
+
+            console.log('Created')
 
             this.objects.push({
                 id: this.createdObjects++,
@@ -43,6 +48,10 @@ export default {
                 y: window.innerHeight,
                 shape: Shapes[Math.floor(Math.random() * Shapes.length)]
             })
+        },
+
+        advanceParticles () {
+            this.delta = (this.delta + 1 % 100)
         },
 
         destroyParticle (particle) {

@@ -16,7 +16,7 @@ export interface State {
 
 export default (): State =>  ({
     mode: '3x3',
-    timingMethod: 'keyboard',
+    timingMethod: 'Keyboard',
     times: [],
     user: null
 })

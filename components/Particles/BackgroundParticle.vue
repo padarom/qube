@@ -31,6 +31,11 @@ export default {
         destroy: {
             type: Function,
             default: () => {}
+        },
+
+        delta: {
+            type: Number,
+            required: false
         }
     },
 
@@ -69,6 +74,12 @@ export default {
         this.destroyed = true
     },
 
+    watch: {
+        delta () {
+            this.update()
+        }
+    },
+
     methods: {
         update () {
             if (this.destroyed) {
@@ -84,8 +95,6 @@ export default {
             this.y -= this.speed
             this.x = this.initialX + Math.sin(this.y * Math.PI / this.frequency) * this.amplitude
             this.rotation = this.y + height
-
-            requestAnimationFrame(this.update.bind(this))
         }
     }
 }
