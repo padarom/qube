@@ -20,27 +20,21 @@ export default {
     data () {
         return {
             createdObjects: 0,
-            spawnParticles: true,
             objects: [],
             delta: 0
         }
     },
 
     mounted () {
-        window.onblur = () => { this.spawnParticles = false }
-        window.onfocus = () => { this.spawnParticles = true }
-
         window.setInterval(this.createParticles.bind(this), 600)
         window.setInterval(this.advanceParticles.bind(this), 18)
     },
 
     methods: {
         createParticles () {
-            if (!this.spawnParticles || this.objects.length > 40) {
+            if (this.objects.length > 40) {
                 return
             }
-
-            console.log('Created')
 
             this.objects.push({
                 id: this.createdObjects++,
