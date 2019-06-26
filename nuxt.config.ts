@@ -45,7 +45,7 @@ const config: NuxtConfiguration = {
   ** Nuxt.js modules
   */
   modules: [
-    // '@nuxtjs/pwa',
+    '@nuxtjs/pwa',
     '@nuxtjs/eslint-module',
     '@nuxtjs/style-resources'
   ],
