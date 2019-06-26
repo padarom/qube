@@ -52,4 +52,8 @@ export default class Keyboard extends IntervalBasedTimer {
         if (this.emitter.isRunning || !this.emitter.isReady) return
         this.emitter.start()
     }
+
+    hint () {
+        return 'Press <kbd>Spacebar</kbd> to start the timer'
+    }
 }

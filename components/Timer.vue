@@ -21,9 +21,7 @@
         </div>
 
         <aside class="hint">
-            <span>
-                Press <kbd>Spacebar</kbd> to start the timer
-            </span>
+            <span v-html="methodHint" />
         </aside>
     </div>
 </template>
@@ -49,6 +47,7 @@ class Timer extends Vue {
     elapsedMilliseconds = 0
     timeEmitter = new TimeEmitter()
     method: TimingMethod | null = null
+    methodHint = ''
 
     // Debug only
     values: any = []
@@ -76,6 +75,8 @@ class Timer extends Vue {
         let TimingMethodConstructor = TimingMethods[value] as any
         this.method = new TimingMethodConstructor()
         this.method!.attachEmitter(this.timeEmitter)
+
+        this.methodHint = this.method!.hint()
     }
 
     mounted () {

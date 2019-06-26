@@ -13,4 +13,8 @@ export default abstract class TimingMethod {
 
     }
 
+    hint () {
+        return ''
+    }
+
 }
