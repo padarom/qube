@@ -53,7 +53,7 @@ class RS232Decoder {
                 bits.push(e.bit)
             }
         }
-        
+
         return bits
     }
 
@@ -73,9 +73,8 @@ class RS232Decoder {
     decode (data: Float32Array) {
         let bits: any = Array.from(data).map(n => this.floatSignalToBinary(n))
         let startIndex = this.findSignalStart(bits)
-        return console.log(data, startIndex)
-        //document.dispatchEvent(new CustomEvent('my_custom_event', { detail: { bits, startIndex }}))
-        //return
+        document.dispatchEvent(new CustomEvent('my_custom_event', { detail: { signal: data, bits, startIndex }}))
+        return
 
         // console.log(startIndex)
         let runLengthEncoded = this.runLengthEncode(bits.slice(startIndex))

@@ -9,7 +9,8 @@
             </select>
         </div>
 
-        <Timer></Timer>
+        <Stackmat-Decoder :chartData="chartData" :styles="{ width: '100vw' }" />
+        <Timer />
 
         <nav class="navigation">
             <ul>
@@ -35,6 +36,7 @@
 </template>
 
 <script>
+import StackmatDecoder from '~/components/StackmatDecoder'
 import BackgroundAnimation from '~/components/BackgroundAnimation'
 import AppSettings from '~/components/AppSettings'
 import RecentTimes from '~/components/RecentTimes'
@@ -46,10 +48,22 @@ import { SweetModal } from 'sweet-modal-vue'
 
 export default {
     components: {
-        BackgroundAnimation, AppSettings, Timer, RecentTimes, SweetModal, StatisticsModalContent: ModalContent
+        BackgroundAnimation, StackmatDecoder, AppSettings, Timer, RecentTimes, SweetModal, StatisticsModalContent: ModalContent
+    },
+
+    data () {
+        return {
+            audio: {}
+        }
     },
 
     mounted () {
+        document.addEventListener('my_custom_event', (e) => {
+            if (Object.keys(this.audio).length) return
+
+            console.log(e.detail.signal)
+            this.$set(this, 'audio', e.detail)
+        })
     },
 
     computed: {
@@ -64,6 +78,34 @@ export default {
 
         user () {
             return this.$store.state.user
+        },
+
+        chartData () {
+            if (!this.audio.signal) return {}
+            let points = this.audio.signal.length
+
+            return {
+                labels: [...new Array(points).keys()],
+                datasets: [{
+                    label: 'AudioData',
+                    strokeColor: 'rgba(151,187,205,1)',
+                    pointColor: 'rgba(151,187,205,1)',
+                    pointStrokeColor: '#fff',
+                    pointHighlightFill: '#fff',
+                    pointHighlightStroke: 'rgba(151,187,205,1)',
+                    data: this.audio.signal,
+                    error: [0.5]
+                }, {
+                    label: 'Average',
+                    strokeColor: 'rgba(245, 15, 15, 0.5)',
+                    pointColor: 'rgba(245, 15, 15, 0.5)',
+                    pointStrokeColor: '#fff',
+                    pointHighlightFill: '#fff',
+                    pointHighlightStroke: 'rgba(220,220,220,1)',
+                    data: [
+                    ]
+                }]
+            }
         }
     }
 }
