@@ -5,31 +5,30 @@ class RS232Decoder {
     constructor (protected ticksPerBit: number) {
     }
 
-    floatSignalToBinary (signal: number) {
+    floatSignalToBinary (signal: number): number {
         if (signal > 0) return 0
         if (signal < 0) return 1
         return -2
     }
 
-    findSignalStart (data: Float32Array) {
+    findSignalStart (data: number[]) {
         let ones = 0
         let waitingForZero = false
 
         for (let i = 0; i < data.length; i++) {
             let bit = data[i]
-            if (bit == 1) ones++
+            if (bit == 0) ones++
             if (ones > 9 * this.ticksPerBit) waitingForZero = true
 
-            if (bit == 0) {
+            if (bit == 1) {
                 ones = 0
                 if (waitingForZero) return i
             }
         }
-
         return undefined
     }
 
-    runLengthEncode (data: Float32Array) {
+    runLengthEncode (data: number[]) {
         let lastBit = -1
         let result = []
 
@@ -57,30 +56,23 @@ class RS232Decoder {
         return bits
     }
 
-    decodeBits (data: any, offset: number) {
-        let result = 0
-        console.log(data, offset)
-        for (let i = 0; i < 8; i++) {
-            result += data[offset + i] << i
-        }
-        return result
+    decodeBits (data: number[], offset: number) {
+        let bitArray = data.slice(offset + 1, offset + 8)
+        return bitArray.reduce((acc, bit) => (acc << 1) | bit, 0)
     }
 
     getPacket (data: any) {
-        return [...Array(9).keys()].map(i => this.decodeBits(data, i * 10))
+        return [...Array(10).keys()].map(i => this.decodeBits(data, i * 10))
     }
 
     decode (data: Float32Array) {
-        let bits: any = Array.from(data).map(n => this.floatSignalToBinary(n))
+        let bits = Array.from(data).map(n => this.floatSignalToBinary(n))
         let startIndex = this.findSignalStart(bits)
-        document.dispatchEvent(new CustomEvent('my_custom_event', { detail: { signal: data, bits, startIndex }}))
-        return
 
-        // console.log(startIndex)
         let runLengthEncoded = this.runLengthEncode(bits.slice(startIndex))
-        console.log(runLengthEncoded)
+        document.dispatchEvent(new CustomEvent('my_custom_event', { detail: { signal: Array.from(data), bits, startIndex }}))
+        
         bits = this.getBitsFromRunLengthEncodedSignal(runLengthEncoded)
-        // console.log(bits)
         return this.getPacket(bits.slice(1))
     }
 
@@ -101,7 +93,7 @@ export default class StackMatG4 extends TimingMethod {
     }
 
     async setupAudioContext () {
-        let stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+        let stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false }, video: false })
 
         let source = this.audioContext.createMediaStreamSource(stream)
         let processor = this.audioContext.createScriptProcessor(4096 * 4, 1, 1)
@@ -145,7 +137,9 @@ export default class StackMatG4 extends TimingMethod {
         if (!packet) return
 
         let decodedSignal = this.decode(packet)
-        console.log(packet, decodedSignal)
+        //console.log(packet, decodedSignal)
+        // @ts-ignore
+        console.log(packet, packet.map(s => String.fromCharCode(s)))
     }
 
 }

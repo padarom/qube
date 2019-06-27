@@ -9,7 +9,8 @@
             </select>
         </div>
 
-        <Stackmat-Decoder :chartData="chartData" :styles="{ width: '100vw' }" />
+        <Stackmat-Decoder :width="1900" :height="600" :chartData="chartData"/>
+        <button @click="log = true" style="position:absolute;top:10px;left:10px;">Sample now</button>
         <Timer />
 
         <nav class="navigation">
@@ -53,15 +54,16 @@ export default {
 
     data () {
         return {
-            audio: {}
+            audio: {},
+            log: false
         }
     },
 
     mounted () {
         document.addEventListener('my_custom_event', (e) => {
-            if (Object.keys(this.audio).length) return
+            if (!this.log) return
+            this.log = false
 
-            console.log(e.detail.signal)
             this.$set(this, 'audio', e.detail)
         })
     },
@@ -84,26 +86,30 @@ export default {
             if (!this.audio.signal) return {}
             let points = this.audio.signal.length
 
+            console.log(this.audio.startIndex)
+
             return {
                 labels: [...new Array(points).keys()],
                 datasets: [{
-                    label: 'AudioData',
-                    strokeColor: 'rgba(151,187,205,1)',
-                    pointColor: 'rgba(151,187,205,1)',
-                    pointStrokeColor: '#fff',
-                    pointHighlightFill: '#fff',
-                    pointHighlightStroke: 'rgba(151,187,205,1)',
+                    label: 'Raw',
                     data: this.audio.signal,
-                    error: [0.5]
+                    borderColor: 'green',
+                    lineTension: 0,
+                    pointRadius: 0,
+                    borderWidth: 1
                 }, {
-                    label: 'Average',
-                    strokeColor: 'rgba(245, 15, 15, 0.5)',
-                    pointColor: 'rgba(245, 15, 15, 0.5)',
-                    pointStrokeColor: '#fff',
-                    pointHighlightFill: '#fff',
-                    pointHighlightStroke: 'rgba(220,220,220,1)',
-                    data: [
-                    ]
+                    label: 'Binary',
+                    data: this.audio.bits.map(i => i ? 0.1 : -0.1),
+                    borderColor: 'black',
+                    lineTension: 0,
+                    pointRadius: 0
+                }, {
+                    label: 'Signal after start',
+                    data: [...new Array(points).keys()].map(k => k >= this.audio.startIndex ? 0.3 : 0),
+                    borderColor: 'red',
+                    lineTension: 0,
+                    pointRadius: 0,
+                    borderWidth: 1
                 }]
             }
         }

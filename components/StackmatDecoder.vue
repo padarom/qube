@@ -16,9 +16,8 @@ export default {
     computed: {
         options () {
             return {
-                tooltips: { enabled: false },
-                hover: { mode: null },
-                responsive: true,
+                // tooltips: { enabled: false },
+                // hover: { mode: null },
                 bezierCurve: false,
                 datasetFill: false,
                 // eslint-disable-next-line
