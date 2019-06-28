@@ -22,7 +22,7 @@
 
         <RecentTimes />
 
-        <sweet-modal ref="statistics">
+        <sweet-modal ref="statistics" width="1000px">
             <StatisticsModalContent />
         </sweet-modal>
 

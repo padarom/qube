@@ -1,13 +1,13 @@
 <script>
-import { Line } from 'vue-chartjs'
+import { Line, mixins } from 'vue-chartjs'
 
 export default {
     extends: Line,
 
-    props: ['times'],
+    mixins: [mixins.reactiveProp],
 
     mounted () {
-        this.renderChart(this.chartdata, this.options)
+        this.renderChart(this.chartData, this.options)
     },
 
     methods: {
@@ -17,40 +17,26 @@ export default {
     },
 
     computed: {
-        chartdata () {
-            return {
-                datasets: [
-                    {
-                        label: '',
-                        data: this.times
-                            .map(time => ({
-                                x: time.timestamp,
-                                y: time.time
-                            }))
-                    }
-                ]
-            }
-        },
-
         options () {
             return {
+                responsive: true,
                 tooltips: {
                     callbacks: {
-                        label: item => this.timeDisplay(item.yLabel)
+                        label: item => this.timeDisplay(item.yLabel),
+                        beforeLabel: item => console.log(item),
+                        title: () => ''
                     }
                 },
                 scales: {
-                    yAxes: [
-                        {
-                            ticks: {
-                                callback: label => this.timeDisplay(label)
-                            }
+                    yAxes: [{
+                        ticks: {
+                            callback: label => this.timeDisplay(label)
                         }
-                    ],
+                    }],
                     xAxes: [{
-                        type: 'time',
-                        distribution: 'linear',
-                        time: { unit: 'day' }
+                        ticks: {
+                            display: false
+                        }
                     }]
                 }
             }
