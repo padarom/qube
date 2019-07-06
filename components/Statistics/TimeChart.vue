@@ -16,11 +16,12 @@
 
 <script>
 import LineChart from './LineChart'
+import { getAverageOf } from './helpers'
 import moment from 'moment'
 
 export default {
     props: [
-        'times'
+        'times', 'averageOfFive', 'averageOfTwelve'
     ],
 
     data () {
@@ -34,24 +35,6 @@ export default {
     methods: {
         timeDisplay (value) {
             return this.$options.filters.timeDisplay(value)
-        },
-
-        getAverages (times, n) {
-            return times.reduce((acc, time) => {
-                // Push the current time into the list
-                acc.times.push(time)
-                // Remove previous entries bigger than 5
-                if (acc.times.length > n) acc.times.shift()
-
-                if (acc.times.length === n) {
-                    let total = acc.times.reduce((acc, cur) => acc + cur.time, 0)
-                    let average = Math.round(total / n)
-
-                    acc.averages.push({ ...time, time: average })
-                }
-
-                return acc
-            }, { times: [], averages: [] }).averages
         }
     },
 
@@ -59,7 +42,7 @@ export default {
         chartData () {
             let labels = this.times.map(time => time.timestamp)
 
-            let generateAverage = (n, label, color) => ({
+            let generateAverage = (list, label, color) => ({
                 label,
                 tension: 0.3,
                 fill: false,
@@ -68,7 +51,7 @@ export default {
                 borderColor: color,
                 pointRadius: 5,
                 pointBorderColor: 'transparent',
-                data: this.getAverages(this.times, n)
+                data: list
                     .map(time => ({
                         ...time,
                         x: labels.indexOf(time.timestamp),
@@ -89,8 +72,8 @@ export default {
                         showLine: false,
                         data: this.times.map(time => ({ ...time, y: time.time }))
                     },
-                    generateAverage(5, 'Average of 5', 'hsl(215, 60%, 50%)'),
-                    generateAverage(12, 'Average of 12', 'hsl(90, 60%, 40%)')
+                    generateAverage(this.averageOfFive, 'Average of 5', 'hsl(215, 60%, 50%)'),
+                    generateAverage(this.averageOfTwelve, 'Average of 12', 'hsl(90, 60%, 40%)')
                 ]
             }
         },
