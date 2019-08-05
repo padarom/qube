@@ -69,7 +69,8 @@ export default {
         firebase.auth().onAuthStateChanged(user => {
             this.$store.commit('setUser', user)
             if (user) {
-                this.$store.dispatch('times/openDBChannel').catch(console.error)
+                this.$store.dispatch('times/openDBChannel', { orderBy: ['created_at', 'desc'] })
+                    .catch(console.error)
             }
         })
 

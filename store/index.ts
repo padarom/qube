@@ -12,7 +12,6 @@ Vue.use(Vuex)
 
 const vuexLocal = new VuexPersistence({
     storage: window.localStorage,
-    modules: ['user', 'configuration'],
 })
 
 const easyFirestore = VuexEasyFirestore(

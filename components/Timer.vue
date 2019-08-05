@@ -115,7 +115,6 @@ class Timer extends Vue {
 
         this.record = record
         this.$store.dispatch('times/insert', record)
-        // this.$store.commit('times/addTime', record)
     }
 
     togglePenalty () {

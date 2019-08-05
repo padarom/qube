@@ -23,6 +23,9 @@ const getters = {
         return Object.keys(state.list)
             .map(id => state.list[id])
             .filter(time => time.mode == rootState.configuration.mode)
+            .sort((a: Time, b: Time) => {
+                return a.timestamp < b.timestamp ? 1 : -1
+            })
     }
 }
 

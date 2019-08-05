@@ -17,6 +17,7 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
+    "@nuxtjs/google-adsense": "^1.1.3",
     "@nuxtjs/pwa": "^3.0.0-beta.16",
     "chart.js": "^2.8.0",
     "firebase": "^6.3.4",
