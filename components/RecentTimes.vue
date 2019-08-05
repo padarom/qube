@@ -16,7 +16,7 @@ export default {
 
     computed: {
         times () {
-            return this.$store.state.times.slice(0, 5)
+            return this.$store.getters['times/modeTimes'].slice(0, 5)
         }
     }
 }

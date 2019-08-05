@@ -39,17 +39,16 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { types } from '~/store/mutations'
 import { AvailableTimingMethods } from './TimingMethods'
 
 @Component
 export default class extends Vue {
     get timingMethod () {
-        return this.$store.state.timingMethod
+        return this.$store.state.configuration.timingMethod
     }
 
     set timingMethod (value) {
-        this.$store.commit(types.SET_TIMING_METHOD, value)
+        this.$store.commit('setTimingMethod', value)
     }
 
     get timingMethods (): typeof AvailableTimingMethods {

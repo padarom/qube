@@ -7,8 +7,8 @@
         <section class="textual">
             <div class="column statistics">
                 <dl>
-                    <dt>Best time</dt>
-                    <dd>{{ bestTime.time | timeDisplay }}</dd>
+                    <dt v-if="times.length">Best time</dt>
+                    <dd v-if="times.length">{{ bestTime.time | timeDisplay }}</dd>
 
                     <dt>Average of 5</dt>
                     <dd>
@@ -52,7 +52,7 @@ export default {
         },
 
         times () {
-            let times = this.$store.state.times.slice()
+            let times = this.$store.getters['times/modeTimes'].slice()
             times.sort((a, b) => new Date(a.timestamp) <= new Date(b.timestamp) ? -1 : 1)
 
             return times

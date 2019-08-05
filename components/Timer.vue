@@ -31,8 +31,7 @@ import TimingMethods, { AvailableTimingMethods } from './TimingMethods'
 import TimeEmitter from './TimeEmitter'
 import shortid from 'shortid'
 import { Component, Watch, Vue } from 'vue-property-decorator'
-import { Time } from '../store/state'
-import { types } from '../store/mutations'
+import { Time } from '../store/times'
 import TimingMethod from './TimingMethods/TimingMethod'
 
 type ElapsedTime = {
@@ -64,7 +63,7 @@ class Timer extends Vue {
     }
 
     get timingMethod (): AvailableTimingMethods {
-        return this.$store.state.timingMethod
+        return this.$store.state.configuration.timingMethod
     }
 
     @Watch('timingMethod', { immediate: true })
@@ -103,18 +102,20 @@ class Timer extends Vue {
         this.elapsedMilliseconds = e.detail
     }
 
-    store () {
+    async store () {
         let record = {
             id: shortid.generate(),
             time: Math.floor(this.elapsedMilliseconds / 10),
             timestamp: new Date(),
             dnf: false,
             penalty: false,
-            timingMethod: this.$store.state.timingMethod
+            mode: this.$store.state.configuration.mode,
+            timingMethod: this.$store.state.configuration.timingMethod
         }
 
         this.record = record
-        this.$store.commit(types.ADD_TIME, record)
+        this.$store.dispatch('times/insert', record)
+        // this.$store.commit('times/addTime', record)
     }
 
     togglePenalty () {
@@ -124,7 +125,7 @@ class Timer extends Vue {
             this.$set(record, 'dnf', false)
         }
 
-        this.$store.commit(types.UPDATE_TIME, this.record)
+        this.$store.dispatch('times/patch', this.record)
     }
 
     toggleDnf () {
@@ -134,7 +135,7 @@ class Timer extends Vue {
             this.$set(record, 'penalty', false)
         }
 
-        this.$store.commit(types.UPDATE_TIME, this.record)
+        this.$store.dispatch('times/patch', this.record)
     }
 }
 

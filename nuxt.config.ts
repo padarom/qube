@@ -38,7 +38,7 @@ const config: NuxtConfiguration = {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    '~plugins/filters'
+    '~plugins/filters',
   ],
 
   /*
