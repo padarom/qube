@@ -1,35 +1,39 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
 import VuexEasyFirestore from 'vuex-easy-firestore'
-import VuexPersistence from 'vuex-persist'
-import { Firebase, initFirebase } from './config/firebase'
+import { getAccessorType } from 'typed-vuex'
+import Vuex from 'vuex'
+import Vue from 'vue'
 
-import times from './times'
-import user from './user'
-import configuration from './configuration'
+import * as configuration from './configuration'
+import * as times from './times'
+import * as user from './user'
 
 Vue.use(Vuex)
 
-const vuexLocal = new VuexPersistence({
-    storage: window.localStorage,
+// We're exporting the accessorType to gain
+// TypeScript support for our Vuex store.
+export const accessorType = getAccessorType({
+  modules: {
+    configuration,
+    times,
+    user,
+  },
 })
 
+// EasyFirestore allows us to automagically synchronize
+// times between Firebase and the local client.
 const easyFirestore = VuexEasyFirestore(
-    [times],
-    { logging: true, FirebaseDependency: Firebase }
+  [times.default],
+  { logging: true },
 )
 
 const store = new Vuex.Store({
-    modules: {
-        user,
-        configuration,
-    },
-    plugins: [easyFirestore, vuexLocal.plugin],
+  modules: {
+    // Modules that are included in EasyFirestore cannot be
+    // added to the main modules.
+    configuration,
+    user,
+  },
+  plugins: [easyFirestore],
 })
-
-initFirebase()
-    .catch((error: any) => {
-        console.warn(error)
-    })
 
 export default () => store

@@ -5,13 +5,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import Vue from 'vue'
 import { AvailableTimingMethods } from './TimingMethods'
 
-@Component
-export default class extends Vue {
-    get user () {
-        return this.$store.state.user.user
-    }
-}
+export default Vue.extend({
+  computed: {
+    user () {
+      return this.$store.state.user.user
+    },
+  },
+})
 </script>

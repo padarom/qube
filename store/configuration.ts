@@ -1,31 +1,24 @@
+import { getAccessorType, mutationTree } from 'typed-vuex'
 import { AvailableTimingMethods } from '~/components/TimingMethods'
 
-export interface State {
-    mode: string,
-    timingMethod: AvailableTimingMethods,
-}
-
-const state = (): State => ({
-    mode: '3x3',
-    timingMethod: AvailableTimingMethods.Keyboard,
+export const state = () => ({
+  mode: '3x3',
+  timingMethod: AvailableTimingMethods.Keyboard,
 })
 
-const mutations = {
-    switchMode (state: State, mode: string) {
-        state.mode = mode
-    },
+export type RootState = ReturnType<typeof state>
 
-    setTimingMethod (state: State, timingMethod: AvailableTimingMethods) {
-        state.timingMethod = timingMethod
-    },
-}
+export const mutations = mutationTree(state, {
+  switchMode (state, mode: string) {
+    state.mode = mode
+  },
 
-const actions = {
+  setTimingMethod (state, timingMethod: AvailableTimingMethods) {
+    state.timingMethod = timingMethod
+  }
+})
 
-}
-
-export default {
-    state,
-    mutations,
-    actions,
-}
+export const accessorType = getAccessorType({
+  state,
+  mutations,
+})
