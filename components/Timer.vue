@@ -2,7 +2,7 @@
     <div>
         <div class="timer">
             <h1 class="time" v-if="!record">
-                {{ elapsed.minutes | padded }}:{{ elapsed.seconds | padded }}.{{ elapsed.centiseconds | padded }}
+                {{ elapsed.minutes | padded }}:{{ elapsed.seconds | padded }}.{{ elapsed.milliseconds | padded(this.accuracy) }}
             </h1>
             <h1 class="time filtered" v-else>
                 {{ record | timeDisplay }}
@@ -42,14 +42,16 @@ class Timer extends Vue {
     timeEmitter = new TimeEmitter()
     method: TimingMethod | null = null
     methodHint = ''
+    accuracy = 3
 
     get elapsed () {
-        let centiseconds = Math.floor(this.elapsedMilliseconds / 10)
+        let accuracy = Math.pow(10, this.accuracy)
+        let milliseconds = Math.round(this.elapsedMilliseconds / (1000 / accuracy))
 
         return {
-            centiseconds: centiseconds % 100,
-            seconds: Math.floor(centiseconds / 100) % 60,
-            minutes: Math.floor(centiseconds / 100 / 60)
+            milliseconds: milliseconds % accuracy,
+            seconds: Math.floor(milliseconds / accuracy) % 60,
+            minutes: Math.floor(milliseconds / accuracy / 60)
         }
     }
 

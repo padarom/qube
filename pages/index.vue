@@ -9,8 +9,6 @@
             </select>
         </div>
 
-        <Stackmat-Decoder :width="1900" :height="600" :chartData="chartData"/>
-        <button @click="log = true" style="position:absolute;top:10px;left:10px;">Sample now</button>
         <Timer />
 
         <nav class="navigation">
@@ -37,7 +35,6 @@
 </template>
 
 <script>
-import StackmatDecoder from '~/components/StackmatDecoder'
 import BackgroundAnimation from '~/components/BackgroundAnimation'
 import AppSettings from '~/components/AppSettings'
 import RecentTimes from '~/components/RecentTimes'
@@ -49,7 +46,7 @@ import { SweetModal } from 'sweet-modal-vue'
 
 export default {
     components: {
-        BackgroundAnimation, StackmatDecoder, AppSettings, Timer, RecentTimes, SweetModal, StatisticsModalContent: ModalContent
+        BackgroundAnimation, AppSettings, Timer, RecentTimes, SweetModal, StatisticsModalContent: ModalContent
     },
 
     data () {
