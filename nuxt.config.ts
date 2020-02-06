@@ -38,7 +38,7 @@ const config: NuxtConfiguration = {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    '~plugins/filters'
+    '~plugins/filters',
   ],
 
   /*
@@ -47,7 +47,12 @@ const config: NuxtConfiguration = {
   modules: [
     '@nuxtjs/pwa',
     '@nuxtjs/eslint-module',
-    '@nuxtjs/style-resources'
+    '@nuxtjs/style-resources',
+    [
+        '@nuxtjs/google-adsense', {
+            id: 'ca-pub-2592802788414327',
+        }
+    ],
   ],
 
   styleResources: {

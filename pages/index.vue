@@ -13,7 +13,7 @@
 
         <nav class="navigation">
             <ul>
-                <li v-if="user">{{ user.displayName ? user.displayName : user.email }}</li>
+                <li v-if="user" @click="$refs.usersettings.open()">{{ user.displayName ? user.displayName : user.email }}</li>
                 <li v-else @click="$refs.login.open()">Login</li>
                 <li @click="$refs.statistics.open()">Show all times</li>
                 <li @click="$refs.settings.open()"><i class="fal fa-cogs"></i></li>
@@ -22,7 +22,7 @@
 
         <RecentTimes />
 
-        <sweet-modal ref="statistics">
+        <sweet-modal ref="statistics" width="1000px">
             <StatisticsModalContent />
         </sweet-modal>
 
@@ -30,23 +30,39 @@
             <AppSettings />
         </sweet-modal>
 
-        <sweet-modal ref="login" width="300px"></sweet-modal>
+        <sweet-modal ref="login" width="300px">
+            <div id="auth-container"></div>
+        </sweet-modal>
+
+        <sweet-modal v-if="user" ref="usersettings" width="300px">
+            <UserSettings />
+        </sweet-modal>
     </div>
 </template>
 
 <script>
 import BackgroundAnimation from '~/components/BackgroundAnimation'
 import AppSettings from '~/components/AppSettings'
+import UserSettings from '~/components/UserSettings'
 import RecentTimes from '~/components/RecentTimes'
 import ModalContent from '~/components/Statistics/ModalContent'
 import Timer from '~/components/Timer'
-import { types } from '~/store/mutations'
 
 import { SweetModal } from 'sweet-modal-vue'
+import firebase from 'firebase/app'
+import 'firebase/auth'
+import * as firebaseui from 'firebaseui'
+require('firebase/firestore') // Firestore comes with side-effects, so we're using require
 
 export default {
     components: {
-        BackgroundAnimation, AppSettings, Timer, RecentTimes, SweetModal, StatisticsModalContent: ModalContent
+        BackgroundAnimation,
+        AppSettings,
+        UserSettings,
+        Timer,
+        RecentTimes,
+        SweetModal,
+        StatisticsModalContent: ModalContent,
     },
 
     data () {
@@ -57,18 +73,21 @@ export default {
     },
 
     mounted () {
-        document.addEventListener('my_custom_event', (e) => {
-            if (!this.log) return
-            this.log = false
-
-            this.$set(this, 'audio', e.detail)
+        firebase.auth().onAuthStateChanged(user => {
+            this.$store.commit('setUser', user)
+            if (user) {
+                this.$store.dispatch('times/openDBChannel', { orderBy: ['created_at', 'desc'] })
+                    .catch(console.error)
+            }
         })
+
+        this.setupFirebaseUI()
     },
 
     computed: {
         mode: {
             get () {
-                return this.$store.state.mode
+                return this.$store.state.configuration.mode
             },
             set (value) {
                 this.$store.commit('switchMode', value)
@@ -76,39 +95,22 @@ export default {
         },
 
         user () {
-            return this.$store.state.user
-        },
+            return this.$store.state.user.user
+        }
+    },
 
-        chartData () {
-            if (!this.audio.signal) return {}
-            let points = this.audio.signal.length
+    methods: {
+        setupFirebaseUI () {
+            const ui = new firebaseui.auth.AuthUI(firebase.auth())
 
-            console.log(this.audio.startIndex)
-
-            return {
-                labels: [...new Array(points).keys()],
-                datasets: [{
-                    label: 'Raw',
-                    data: this.audio.signal,
-                    borderColor: 'green',
-                    lineTension: 0,
-                    pointRadius: 0,
-                    borderWidth: 1
-                }, {
-                    label: 'Binary',
-                    data: this.audio.bits.map(i => i ? 0.1 : -0.1),
-                    borderColor: 'black',
-                    lineTension: 0,
-                    pointRadius: 0
-                }, {
-                    label: 'Signal after start',
-                    data: [...new Array(points).keys()].map(k => k >= this.audio.startIndex ? 0.3 : 0),
-                    borderColor: 'red',
-                    lineTension: 0,
-                    pointRadius: 0,
-                    borderWidth: 1
-                }]
-            }
+            ui.start('#auth-container', {
+                signInOptions: [
+                    { provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID, scopes: ['email'] },
+                    { provider: firebase.auth.FacebookAuthProvider.PROVIDER_ID, scopes: ['email'] },
+                    { provider: firebase.auth.GithubAuthProvider.PROVIDER_ID, scopes: ['user:email'] },
+                    { provider: firebase.auth.TwitterAuthProvider.PROVIDER_ID },
+                ]
+            })
         }
     }
 }

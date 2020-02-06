@@ -1,22 +1,35 @@
 import Vue from 'vue'
-import Vuex, { Plugin } from 'vuex'
+import Vuex from 'vuex'
+import VuexEasyFirestore from 'vuex-easy-firestore'
 import VuexPersistence from 'vuex-persist'
+import { Firebase, initFirebase } from './config/firebase'
 
-import state, { State } from './state'
-import getters from './getters'
-import mutations from './mutations'
-import actions from './actions'
+import times from './times'
+import user from './user'
+import configuration from './configuration'
 
 Vue.use(Vuex)
 
 const vuexLocal = new VuexPersistence({
-    storage: window.localStorage
+    storage: window.localStorage,
 })
 
-export default () => new Vuex.Store({
-    state,
-    getters,
-    mutations,
-    actions,
-    plugins: [vuexLocal.plugin] as Plugin<State>[]
+const easyFirestore = VuexEasyFirestore(
+    [times],
+    { logging: true, FirebaseDependency: Firebase }
+)
+
+const store = new Vuex.Store({
+    modules: {
+        user,
+        configuration,
+    },
+    plugins: [easyFirestore, vuexLocal.plugin],
 })
+
+initFirebase()
+    .catch((error: any) => {
+        console.warn(error)
+    })
+
+export default () => store
