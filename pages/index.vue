@@ -9,7 +9,7 @@
             </select>
         </div>
 
-        <Timer></Timer>
+        <Timer />
 
         <nav class="navigation">
             <ul>
@@ -63,6 +63,13 @@ export default {
         RecentTimes,
         SweetModal,
         StatisticsModalContent: ModalContent,
+    },
+
+    data () {
+        return {
+            audio: {},
+            log: false
+        }
     },
 
     mounted () {

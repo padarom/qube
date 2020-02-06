@@ -2,7 +2,7 @@
     <div>
         <div class="timer">
             <h1 class="time" v-if="!record">
-                {{ elapsed.minutes | padded }}:{{ elapsed.seconds | padded }}.{{ elapsed.centiseconds | padded }}
+                {{ elapsed.minutes | padded }}:{{ elapsed.seconds | padded }}.{{ elapsed.milliseconds | padded(this.accuracy) }}
             </h1>
             <h1 class="time filtered" v-else>
                 {{ record | timeDisplay }}
@@ -11,12 +11,6 @@
             <div class="adjustments" v-if="record">
                 <button @click="togglePenalty" :class="{ active: record.penalty }">+2</button>
                 <button @click="toggleDnf" :class="{ active: record.dnf }">DNF</button>
-            </div>
-
-            <div class="a">
-                <span class="dot" v-for="(value, ind) in values" :key="ind" :class="`val-${value} ${ind > startIndex ? 'act' : ''}`">
-                    .
-                </span>
             </div>
         </div>
 
@@ -47,18 +41,16 @@ class Timer extends Vue {
     timeEmitter = new TimeEmitter()
     method: TimingMethod | null = null
     methodHint = ''
-
-    // Debug only
-    values: any = []
-    startIndex: any = 0
+    accuracy = 3
 
     get elapsed () {
-        let centiseconds = Math.floor(this.elapsedMilliseconds / 10)
+        let accuracy = Math.pow(10, this.accuracy)
+        let milliseconds = Math.round(this.elapsedMilliseconds / (1000 / accuracy))
 
         return {
-            centiseconds: centiseconds % 100,
-            seconds: Math.floor(centiseconds / 100) % 60,
-            minutes: Math.floor(centiseconds / 100 / 60)
+            milliseconds: milliseconds % accuracy,
+            seconds: Math.floor(milliseconds / accuracy) % 60,
+            minutes: Math.floor(milliseconds / accuracy / 60)
         }
     }
 
@@ -82,15 +74,6 @@ class Timer extends Vue {
         this.timeEmitter.addEventListener(TimeEmitter.Events.TIMER_RESET, () => this.resetTimer())
         this.timeEmitter.addEventListener(TimeEmitter.Events.TIME_UPDATED, (e) => this.updateTime(e))
         this.timeEmitter.addEventListener(TimeEmitter.Events.TIMER_ENDED, () => this.store())
-
-        // Debug only
-        document.addEventListener('my_custom_event', (e) => {
-            // @ts-ignore
-            let { bits, startIndex } = e.detail
-
-            this.startIndex = startIndex
-            this.$set(this, 'values', bits)
-        })
     }
 
     resetTimer () {
@@ -140,50 +123,3 @@ class Timer extends Vue {
 
 export default Timer
 </script>
-
-<style lang="stylus">
-    .dot
-        width: 2px
-        display: inline-block
-        position: relative
-        color: black
-
-        &.val-1
-            top: -10px
-            color: green
-        &.val--2
-            opacity: 0
-        &:not(.act)
-            color: red
-
-    .timer
-        position: relative
-
-    .timer h1
-        margin: 0
-        font-size: 100px
-
-    .adjustments
-        position: absolute
-        top: 0
-        right: -90px
-        display: flex
-        flex-direction: column
-        justify-content: center
-        height: 100%
-
-    .adjustments button
-        background: none
-        border: none
-        outline: none
-        cursor: pointer
-
-        font-family: 'Anonymous Pro', monospace
-        font-weight: bold
-        font-size: 30px
-        text-align: left
-        color: $color-primary
-
-    .adjustments button.active
-        color: #de6060
-</style>
