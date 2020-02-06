@@ -5,7 +5,7 @@
                 {{ elapsed.minutes | padded }}:{{ elapsed.seconds | padded }}.{{ elapsed.milliseconds | padded(this.accuracy) }}
             </h1>
             <h1 class="time filtered" v-else>
-                {{ record | timeDisplay }}
+                {{ record | timeDisplay(this.accuracy) }}
             </h1>
 
             <div class="adjustments" v-if="record">
@@ -73,7 +73,7 @@ class Timer extends Vue {
     mounted () {
         this.timeEmitter.addEventListener(TimeEmitter.Events.TIMER_RESET, () => this.resetTimer())
         this.timeEmitter.addEventListener(TimeEmitter.Events.TIME_UPDATED, (e) => this.updateTime(e))
-        this.timeEmitter.addEventListener(TimeEmitter.Events.TIMER_ENDED, () => this.store())
+        this.timeEmitter.addEventListener(TimeEmitter.Events.TIMER_ENDED, (e) => this.store(e))
     }
 
     resetTimer () {
@@ -85,10 +85,12 @@ class Timer extends Vue {
         this.elapsedMilliseconds = e.detail
     }
 
-    async store () {
+    async store (e: any) {
+        this.elapsedMilliseconds = e.detail
+
         let record = {
             id: shortid.generate(),
-            time: Math.floor(this.elapsedMilliseconds / 10),
+            time: this.elapsedMilliseconds,
             timestamp: new Date(),
             dnf: false,
             penalty: false,
@@ -123,3 +125,48 @@ class Timer extends Vue {
 
 export default Timer
 </script>
+
+<style lang="stylus">
+    .dot
+        width: 2px
+        display: inline-block
+        position: relative
+        color: black
+        &.val-1
+            top: -10px
+            color: green
+        &.val--2
+            opacity: 0
+        &:not(.act)
+            color: red
+
+    .timer
+        position: relative
+
+    .timer h1
+        margin: 0
+        font-size: 100px
+
+    .adjustments
+        position: absolute
+        top: 0
+        right: -90px
+        display: flex
+        flex-direction: column
+        justify-content: center
+        height: 100%
+
+    .adjustments button
+        background: none
+        border: none
+        outline: none
+        cursor: pointer
+        font-family: 'Anonymous Pro', monospace
+        font-weight: bold
+        font-size: 30px
+        text-align: left
+        color: $color-primary
+
+    .adjustments button.active
+        color: #de6060
+</style>

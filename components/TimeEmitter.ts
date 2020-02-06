@@ -44,9 +44,11 @@ export default class TimeEmitter extends EventTarget {
         this._started = true
     }
 
-    stop () {
+    stop (value: number | undefined = undefined) {
+        if (value) this._time = value
+        
         if (this._started) {
-            this.dispatchEvent(new CustomEvent(TimeEmitter.Events.TIMER_ENDED))
+            this.dispatchEvent(new CustomEvent(TimeEmitter.Events.TIMER_ENDED, { detail: this._time }))
         }
 
         this._started = false
@@ -54,8 +56,11 @@ export default class TimeEmitter extends EventTarget {
     }
 
     ready () {
+        if (!this._ready) {
+            this.dispatchEvent(new CustomEvent(TimeEmitter.Events.TIMER_READY))
+        }
+
         this._ready = true
-        this.dispatchEvent(new CustomEvent(TimeEmitter.Events.TIMER_READY))
     }
 
     reset () {

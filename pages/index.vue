@@ -95,7 +95,8 @@ export default {
         },
 
         user () {
-            return this.$store.state.user.user
+            let userState = this.$store.state.user || {}
+            return userState.user
         }
     },
 

@@ -88,6 +88,7 @@ export default class StackMatG4 extends TimingMethod {
 
     protected audioContext: AudioContext
     protected rs232Decoder: RS232Decoder
+    protected previousState: StackMatStatus | null = null
 
     constructor () {
         super()
@@ -147,10 +148,29 @@ export default class StackMatG4 extends TimingMethod {
         let packet = this.rs232Decoder.decode(signal)
         if (!packet) return
 
-        let decodedSignal = this.decode(packet)
-        if (!decodedSignal) return
+        let state = this.decode(packet)
+        if (!state) return
 
-        this.emitter.setTime(parseInt(decodedSignal.digits.join('')))
+        // Always emit the current time
+        let milliseconds = parseInt(state.digits.join(''))
+        this.emitter.setTime(milliseconds)
+
+        if (this.previousState) {
+            let previousMilliseconds = parseInt(this.previousState.digits.join(''))
+            let hasStateChanged = this.previousState.status != state.status || milliseconds != previousMilliseconds
+
+            if (milliseconds == 0 && state.status == 'I') this.emitter.ready()
+
+            if (hasStateChanged) {
+                if (this.previousState.status != ' ' && state.status == ' ') this.emitter.start()
+                if (this.previousState.status == ' ' && state.status == 'I') this.emitter.stop(milliseconds)
+                if (previousMilliseconds > milliseconds) {
+                    this.emitter.reset()
+                }
+            }
+        }
+
+        this.previousState = state
     }
 
 }

@@ -5,7 +5,7 @@ export default abstract class IntervalBasedTimer extends TimingMethod {
 
     protected interval: number | null = null
 
-    attachEmitter (emitter: TimeEmitter) {
+    attachEmitter (emitter: TimeEmitter): TimingMethod {
         emitter.addEventListener(TimeEmitter.Events.TIMER_STARTED, this.setupInterval.bind(this))
         emitter.addEventListener(TimeEmitter.Events.TIMER_ENDED, this.destroyInterval.bind(this))
 
