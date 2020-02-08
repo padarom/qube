@@ -19,24 +19,24 @@ import Vue, { PropType } from 'vue'
 import moment from 'moment'
 import LineChart from './LineChart.vue'
 import { getAverageOf } from './helpers'
-import { Time } from '~/store/times'
+import { SolvingTime } from '~/store/times'
 import { Line, mixins } from 'vue-chartjs'
 import { ChartOptions, ChartData } from 'chart.js'
 
 export default Vue.extend({
   props: {
     times: {
-      type: Array as PropType<Time[]>,
+      type: Array as PropType<SolvingTime[]>,
       required: true,
     },
 
     averageOfFive: {
-      type: Array as PropType<Time[]>,
+      type: Array as PropType<SolvingTime[]>,
       required: true,
     },
 
     averageOfTwelve: {
-      type: Array as PropType<Time[]>,
+      type: Array as PropType<SolvingTime[]>,
       required: true,
     },
   },
@@ -63,7 +63,7 @@ export default Vue.extend({
     chartData (): ChartData {
       const labels = this.times.map(time => time.timestamp)
 
-      const generateAverage = (list: Time[], label: string, color: string) => ({
+      const generateAverage = (list: SolvingTime[], label: string, color: string) => ({
         label,
         tension: 0.3,
         fill: false,
@@ -76,7 +76,7 @@ export default Vue.extend({
           .map(time => ({
             ...time,
             x: labels.indexOf(time.timestamp),
-            y: time.time
+            y: time.milliseconds
           }))
       })
 
@@ -91,7 +91,7 @@ export default Vue.extend({
             borderColor: 'hsla(0, 90%, 60%, 0.7)',
             borderWidth: 2,
             showLine: false,
-            data: this.times.map(time => ({ ...time, y: time.time }))
+            data: this.times.map(time => ({ ...time, y: time.milliseconds }))
           },
           generateAverage(this.averageOfFive, 'Average of 5', 'hsl(215, 60%, 50%)'),
           generateAverage(this.averageOfTwelve, 'Average of 12', 'hsl(90, 60%, 40%)')
@@ -101,12 +101,12 @@ export default Vue.extend({
 
     options (): ChartOptions {
       // Calculate the standard deviation so that we can restrict the chart
-      const mean = this.times.reduce((sum, cur) => sum + cur.time, 0) / this.times.length
-      const squaredDifferences = this.times.map(cur => Math.pow(cur.time - mean, 2))
+      const mean = this.times.reduce((sum, cur) => sum + cur.milliseconds, 0) / this.times.length
+      const squaredDifferences = this.times.map(cur => Math.pow(cur.milliseconds - mean, 2))
       const squaredMean = squaredDifferences.reduce((sum, cur) => sum + cur, 0) / this.times.length
       const standardDeviation = Math.sqrt(squaredMean)
 
-      const firstTime = this.times.length ? this.times[0].time : 0
+      const firstTime = this.times.length ? this.times[0].milliseconds : 0
 
       return {
         responsive: true,
@@ -116,7 +116,7 @@ export default Vue.extend({
             title: (items, object) => {
               const { datasetIndex, index } = items[0]
               const datasets = object.datasets
-              const value = object.datasets![datasetIndex as number].data![index as number] as Time
+              const value = object.datasets![datasetIndex as number].data![index as number] as SolvingTime
 
               return moment(value.timestamp).format('LLL')
             }

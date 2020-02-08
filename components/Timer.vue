@@ -25,7 +25,7 @@ import Vue from 'vue'
 import TimingMethods, { AvailableTimingMethods } from './TimingMethods'
 import TimeEmitter from './TimeEmitter'
 import shortid from 'shortid'
-import { Time } from '../store/times'
+import { SolvingTime } from '../store/times'
 import TimingMethod from './TimingMethods/TimingMethod'
 
 type ElapsedTime = {
@@ -43,12 +43,12 @@ type TimingObject = {
 export default Vue.extend({
   data () {
     return {
-      record: null as Time | null,
+      record: null as SolvingTime | null,
       elapsedMilliseconds: 0,
       timeEmitter: new TimeEmitter(),
       method: null as TimingMethod | null,
       methodHint: '',
-      accuracy: 3,
+      accuracy: 2,
     }
   },
 
@@ -107,7 +107,7 @@ export default Vue.extend({
 
       const record = {
         id: shortid.generate(),
-        time: Math.floor(this.elapsedMilliseconds / 10),
+        milliseconds: Math.floor(this.elapsedMilliseconds / 10),
         timestamp: new Date(),
         dnf: false,
         penalty: false,
@@ -120,8 +120,8 @@ export default Vue.extend({
     },
 
     togglePenalty () {
-      const record = this.record as Time
-      this.$set(record as Time, 'penalty', !record.penalty)
+      const record = this.record as SolvingTime
+      this.$set(record as SolvingTime, 'penalty', !record.penalty)
       if (record.penalty) {
         this.$set(record, 'dnf', false)
       }
@@ -130,7 +130,7 @@ export default Vue.extend({
     },
 
     toggleDnf () {
-      const record = this.record as Time
+      const record = this.record as SolvingTime
       this.$set(record, 'dnf', !record.dnf)
       if (record.dnf) {
         this.$set(record, 'penalty', false)

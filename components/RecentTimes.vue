@@ -9,7 +9,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import RecordedTime from './RecordedTime.vue'
-import { Time } from '~/store/times'
+import { SolvingTime } from '~/store/times'
 
 export default Vue.extend({
   components: {
@@ -17,7 +17,7 @@ export default Vue.extend({
   },
 
   computed: {
-    times (): Time[] {
+    times (): SolvingTime[] {
       return this.$accessor.times.modeTimes.slice(0, 5)
     },
   },

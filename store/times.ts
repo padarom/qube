@@ -1,18 +1,18 @@
 import { getAccessorType, mutationTree, getterTree } from 'typed-vuex'
 import { AvailableTimingMethods } from '~/components/TimingMethods'
 
-export interface Time {
+export interface SolvingTime {
   id: string,
-  time: number,
+  milliseconds: number,
   dnf?: boolean,
   penalty?: boolean,
   timestamp: Date,
   mode: string,
-  timingMethod?: AvailableTimingMethods
+  timingMethod?: AvailableTimingMethods,
 }
 
 export const state = () => ({
-  list: {} as { [s: string]: Time },
+  list: {} as { [s: string]: SolvingTime },
 })
 
 export const getters = getterTree(state, {

@@ -1,6 +1,6 @@
-import { Time } from '~/store/times'
+import { SolvingTime } from '~/store/times'
 
-export function getAverageOf (n: number, times: Time[]) {
+export function getAverageOf (n: number, times: SolvingTime[]) {
   return times.reduce((acc, time) => {
     // Push the current time into the list
     acc.times.push(time)
@@ -9,15 +9,15 @@ export function getAverageOf (n: number, times: Time[]) {
     if (acc.times.length > n) acc.times.shift()
 
     if (acc.times.length === n) {
-      let total = acc.times.reduce((acc, cur) => acc + cur.time, 0)
+      let total = acc.times.reduce((acc, cur) => acc + cur.milliseconds, 0)
       let average = Math.round(total / n)
 
-      acc.averages.push({ ...time, time: average })
+      acc.averages.push({ ...time, milliseconds: average })
     }
 
     return acc
   }, {
-    times: [] as Time[],
-    averages: [] as Time[]
+    times: [] as SolvingTime[],
+    averages: [] as SolvingTime[]
   }).averages
 }

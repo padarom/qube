@@ -2,11 +2,22 @@
     <div id="app">
         <BackgroundAnimation />
 
-        <div class="">
-            <select v-model="mode">
-                <option value="3x3">Rubik's Cube</option>
-                <option value="4x4">Rubik's Professor</option>
-            </select>
+        <div class="mode-switch">
+            <div class="puzzle">
+                <select v-model="mode">
+                    <option value="3x3">Rubik's Cube</option>
+                    <option value="4x4">Rubik's Professor</option>
+                </select>
+            </div>
+
+            <!--
+            <div class="modes">
+                <select v-model="mode">
+                    <option value="3x3">Rubik's Cube</option>
+                    <option value="4x4">Rubik's Professor</option>
+                </select>
+            </div>
+            -->
         </div>
 
         <Timer />
