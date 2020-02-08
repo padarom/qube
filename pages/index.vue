@@ -9,7 +9,7 @@
             </select>
         </div>
 
-        <Timer></Timer>
+        <Timer />
 
         <nav class="navigation">
             <ul>

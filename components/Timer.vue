@@ -2,21 +2,15 @@
     <div>
         <div class="timer">
             <h1 class="time" v-if="!record">
-                {{ elapsed.minutes | padded }}:{{ elapsed.seconds | padded }}.{{ elapsed.centiseconds | padded }}
+                {{ elapsed.minutes | padded }}:{{ elapsed.seconds | padded }}.{{ elapsed.milliseconds | padded(this.accuracy) }}
             </h1>
             <h1 class="time filtered" v-else>
-                {{ record | timeDisplay }}
+                {{ record | timeDisplay(this.accuracy) }}
             </h1>
 
             <div class="adjustments" v-if="record">
                 <button @click="togglePenalty" :class="{ active: record.penalty }">+2</button>
                 <button @click="toggleDnf" :class="{ active: record.dnf }">DNF</button>
-            </div>
-
-            <div class="a">
-                <span class="dot" v-for="(value, ind) in values" :key="ind" :class="`val-${value} ${ind > startIndex ? 'act' : ''}`">
-                    .
-                </span>
             </div>
         </div>
 
@@ -48,6 +42,7 @@ export default Vue.extend({
       timeEmitter: new TimeEmitter(),
       method: null as TimingMethod | null,
       methodHint: '',
+      accuracy: 3,
     }
   },
 
@@ -59,13 +54,14 @@ export default Vue.extend({
 
   computed: {
     elapsed () {
-      let centiseconds = Math.floor(this.elapsedMilliseconds / 10)
+        let accuracy = Math.pow(10, this.accuracy)
+        let milliseconds = Math.round(this.elapsedMilliseconds / (1000 / accuracy))
 
-      return {
-        centiseconds: centiseconds % 100,
-        seconds: Math.floor(centiseconds / 100) % 60,
-        minutes: Math.floor(centiseconds / 100 / 60)
-      }
+        return {
+            milliseconds: milliseconds % accuracy,
+            seconds: Math.floor(milliseconds / accuracy) % 60,
+            minutes: Math.floor(milliseconds / accuracy / 60)
+        }
     },
 
     timingMethod (): AvailableTimingMethods {
@@ -99,15 +95,17 @@ export default Vue.extend({
       this.elapsedMilliseconds = e.detail
     },
 
-    async store () {
+    async store (e: any) {
+      this.elapsedMilliseconds = e.detail
+      
       let record = {
         id: shortid.generate(),
         time: Math.floor(this.elapsedMilliseconds / 10),
         timestamp: new Date(),
         dnf: false,
         penalty: false,
-        mode: this.$store.state.configuration.mode,
-        timingMethod: this.$store.state.configuration.timingMethod
+        mode: this.$accessor.configuration.mode,
+        timingMethod: this.$accessor.configuration.timingMethod
       }
 
       this.record = record

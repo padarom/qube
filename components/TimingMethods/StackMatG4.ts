@@ -1,41 +1,39 @@
 import TimingMethod from './TimingMethod'
 
+type Bit = boolean
+
+type RunLengthEncoding<T> = {
+    data: T,
+    length: number,
+}[]
+
 class RS232Decoder {
 
-    constructor (protected ticksPerBit: number) {
+    constructor (protected ticksPerBit: number) { }
+
+    floatSignalToBinary (signal: number): Bit {
+        // The signal might be 0, especially if the StackMat is turned off.
+        // This isn't much of an issue though as 0 is mapped to false and therefore
+        // can't be interpreted as correct data because a start can't be found.
+        return signal < 0
     }
 
-    floatSignalToBinary (signal: number) {
-        if (signal > 0) return 0
-        if (signal < 0) return 1
-        return -2
+    findPacketStart (data: RunLengthEncoding<Bit>): number {
+        // Any proper packet can at most consist of 8x bit 1. Therefore the stop signal
+        // is at least as long. As soon as we encounter a signal of at least that length,
+        // we know that the following bits belong to our packet.
+        let minimumHighLength = 9 * this.ticksPerBit
+
+        return data.findIndex(char => char.data === true && char.length >= minimumHighLength)
     }
 
-    findSignalStart (data: Float32Array) {
-        let ones = 0
-        let waitingForZero = false
-
-        for (let i = 0; i < data.length; i++) {
-            let bit = data[i]
-            if (bit == 1) ones++
-            if (ones > 9 * this.ticksPerBit) waitingForZero = true
-
-            if (bit == 0) {
-                ones = 0
-                if (waitingForZero) return i
-            }
-        }
-
-        return undefined
-    }
-
-    runLengthEncode (data: Float32Array) {
-        let lastBit = -1
+    runLengthEncode (data: Bit[]): RunLengthEncoding<Bit> {
+        let lastBit: Bit = false
         let result = []
 
         for (let i = 0; i < data.length; i++) {
-            if (lastBit != data[i]) {
-                result.push({ bit: data[i], length: 1 })
+            if (lastBit != data[i] || i == 0) {
+                result.push({ data: data[i], length: 1 })
                 lastBit = data[i]
             } else {
                 result[result.length - 1].length += 1
@@ -45,52 +43,52 @@ class RS232Decoder {
         return result
     }
 
-    getBitsFromRunLengthEncodedSignal (signal: any) {
-        let bits = []
-        for (let e of signal) {
-            let bitsCount = Math.round(e.length / this.ticksPerBit)
-            for (let i = 0; i < bitsCount; i++) {
-                bits.push(e.bit)
-            }
+    getBitsFromRunLengthEncodedSignal (data: RunLengthEncoding<Bit>): Bit[] {
+        let bits: Bit[] = []
+
+        for (let char of data) {
+            let count = Math.round(char.length / this.ticksPerBit)
+            bits.push(...Array(count).fill(char.data))
         }
         
         return bits
     }
 
-    decodeBits (data: any, offset: number) {
-        let result = 0
-        console.log(data, offset)
-        for (let i = 0; i < 8; i++) {
-            result += data[offset + i] << i
-        }
-        return result
+    decodeBits (data: Bit[], offset: number): number {
+        let bitArray = data.slice(offset + 1, offset + 9)
+            .map(bit => bit ? 1 : 0)
+
+        // The bits are in little-endian, so we'll have to reverse the array
+        // for decoding.
+        return parseInt(bitArray.reverse().join(''), 2)
     }
 
-    getPacket (data: any) {
-        return [...Array(9).keys()].map(i => this.decodeBits(data, i * 10))
+    getPacket (data: Bit[]): number[] {
+        return [...Array(10).keys()].map(i => this.decodeBits(data, i * 10))
     }
 
-    decode (data: Float32Array) {
-        let bits: any = Array.from(data).map(n => this.floatSignalToBinary(n))
-        let startIndex = this.findSignalStart(bits)
-        return console.log(data, startIndex)
-        //document.dispatchEvent(new CustomEvent('my_custom_event', { detail: { bits, startIndex }}))
-        //return
+    decode (analogSignal: Float32Array): number[] | null {
+        let digitalSignal = Array.from(analogSignal).map(n => this.floatSignalToBinary(n))
 
-        // console.log(startIndex)
-        let runLengthEncoded = this.runLengthEncode(bits.slice(startIndex))
-        console.log(runLengthEncoded)
-        bits = this.getBitsFromRunLengthEncodedSignal(runLengthEncoded)
-        // console.log(bits)
-        return this.getPacket(bits.slice(1))
+        let runLengthEncoded = this.runLengthEncode(digitalSignal)
+        let startIndex = this.findPacketStart(runLengthEncoded)
+        if (startIndex == -1) return null
+
+        let bits = this.getBitsFromRunLengthEncodedSignal(runLengthEncoded.slice(startIndex + 1))
+        return this.getPacket(bits)
     }
+}
 
+type StackMatStatus = {
+    status: string,
+    digits: string[]
 }
 
 export default class StackMatG4 extends TimingMethod {
 
     protected audioContext: AudioContext
     protected rs232Decoder: RS232Decoder
+    protected previousState: StackMatStatus | null = null
 
     constructor () {
         super()
@@ -102,33 +100,37 @@ export default class StackMatG4 extends TimingMethod {
     }
 
     async setupAudioContext () {
-        let stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+        let stream = await navigator.mediaDevices.getUserMedia({
+            audio: {
+                echoCancellation: false,
+                noiseSuppression: false,
+            },
+            video: false,
+        })
 
         let source = this.audioContext.createMediaStreamSource(stream)
         let processor = this.audioContext.createScriptProcessor(4096 * 4, 1, 1)
+        processor.onaudioprocess = (e) => this.signalFetched(e.inputBuffer.getChannelData(0))
 
         source.connect(processor)
-        source.connect(this.audioContext.destination)
         processor.connect(this.audioContext.destination)
-
-        processor.onaudioprocess = e => this.signalFetched(e.inputBuffer.getChannelData(0))
     }
 
-    decode (packet: number[]) {
+    decode (packet: number[]): StackMatStatus | null {
         if (!this.isValidPacket(packet)) return null
 
         return {
-            status: packet[0],
-            digits: packet.slice(1, 4)
+            status: String.fromCharCode(packet[0]),
+            digits: packet.slice(1, 7).map(ascii => String.fromCharCode(ascii))
         }
     }
 
-    isValidPacket (data: any): boolean {
-        const contains = (needle: number, haystack: string) => {
+    isValidPacket (data: number[]): boolean {
+        const contains = (needle: number, haystack: string): boolean => {
             return haystack.indexOf(String.fromCharCode(needle)) != -1
         }
 
-        let checksum = data.slice(1, 4).map((v: number) => v - 48).reduce((t: number, s: number) => t + s)
+        let checksum = data.slice(1, 7).map(v => v - 48).reduce((t, s) => t + s)
 
         return contains(data[0], 'IA SLRC')
             && contains(data[1], '0123456789')
@@ -136,17 +138,39 @@ export default class StackMatG4 extends TimingMethod {
             && contains(data[3], '0123456789')
             && contains(data[4], '0123456789')
             && contains(data[5], '0123456789')
-            && checksum == data[6] - 64
-            && data[7] == 10
-            && data[8] == 13
+            && contains(data[6], '0123456789')
+            && checksum == data[7] - 64
+            && data[8] == 10
+            && data[9] == 13
     }
 
     signalFetched (signal: Float32Array) {
         let packet = this.rs232Decoder.decode(signal)
         if (!packet) return
 
-        let decodedSignal = this.decode(packet)
-        console.log(packet, decodedSignal)
+        let state = this.decode(packet)
+        if (!state) return
+
+        // Always emit the current time
+        let milliseconds = parseInt(state.digits.join(''))
+        this.emitter.setTime(milliseconds)
+
+        if (this.previousState) {
+            let previousMilliseconds = parseInt(this.previousState.digits.join(''))
+            let hasStateChanged = this.previousState.status != state.status || milliseconds != previousMilliseconds
+
+            if (milliseconds == 0 && state.status == 'I') this.emitter.ready()
+
+            if (hasStateChanged) {
+                if (this.previousState.status != ' ' && state.status == ' ') this.emitter.start()
+                if (this.previousState.status == ' ' && state.status == 'I') this.emitter.stop(milliseconds)
+                if (previousMilliseconds > milliseconds) {
+                    this.emitter.reset()
+                }
+            }
+        }
+
+        this.previousState = state
     }
 
 }
