@@ -27,13 +27,14 @@ const easyFirestore = VuexEasyFirestore(
 )
 
 const store = new Vuex.Store({
+  plugins: [easyFirestore],
   modules: {
     // Modules that are included in EasyFirestore cannot be
     // added to the main modules.
     configuration,
     user,
+    times,
   },
-  plugins: [easyFirestore],
 })
 
 export default () => store

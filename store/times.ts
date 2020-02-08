@@ -43,4 +43,5 @@ export default {
 
   state,
   getters,
+  accessorType,
 }

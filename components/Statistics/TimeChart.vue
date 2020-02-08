@@ -31,12 +31,12 @@ export default Vue.extend({
     },
 
     averageOfFive: {
-      type: Object as PropType<Time[]>,
+      type: Array as PropType<Time[]>,
       required: true,
     },
 
     averageOfTwelve: {
-      type: Object as PropType<Time[]>,
+      type: Array as PropType<Time[]>,
       required: true,
     },
   },
@@ -61,9 +61,9 @@ export default Vue.extend({
 
   computed: {
     chartData (): ChartData {
-      let labels = this.times.map(time => time.timestamp)
+      const labels = this.times.map(time => time.timestamp)
 
-      let generateAverage = (list: Time[], label: string, color: string) => ({
+      const generateAverage = (list: Time[], label: string, color: string) => ({
         label,
         tension: 0.3,
         fill: false,
@@ -101,23 +101,22 @@ export default Vue.extend({
 
     options (): ChartOptions {
       // Calculate the standard deviation so that we can restrict the chart
-      let mean = this.times.reduce((sum, cur) => sum + cur.time, 0) / this.times.length
-      let squaredDifferences = this.times.map(cur => Math.pow(cur.time - mean, 2))
-      let squaredMean = squaredDifferences.reduce((sum, cur) => sum + cur, 0) / this.times.length
-      let standardDeviation = Math.sqrt(squaredMean)
+      const mean = this.times.reduce((sum, cur) => sum + cur.time, 0) / this.times.length
+      const squaredDifferences = this.times.map(cur => Math.pow(cur.time - mean, 2))
+      const squaredMean = squaredDifferences.reduce((sum, cur) => sum + cur, 0) / this.times.length
+      const standardDeviation = Math.sqrt(squaredMean)
 
-      let firstTime = this.times.length ? this.times[0].time : 0
+      const firstTime = this.times.length ? this.times[0].time : 0
 
       return {
         responsive: true,
         tooltips: {
           callbacks: {
             label: item => this.timeDisplay(item.yLabel),
-            // beforeLabel: item => console.log(item),
             title: (items, object) => {
-              let { datasetIndex, index } = items[0]
-              let datasets = object.datasets
-              let value = object.datasets![datasetIndex as number].data![index as number] as Time
+              const { datasetIndex, index } = items[0]
+              const datasets = object.datasets
+              const value = object.datasets![datasetIndex as number].data![index as number] as Time
 
               return moment(value.timestamp).format('LLL')
             }

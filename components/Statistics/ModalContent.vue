@@ -50,7 +50,7 @@ export default Vue.extend({
 
   computed: {
     times (): Time[] {
-      let times = this.$accessor.times.modeTimes
+      const times = this.$accessor.times.modeTimes
       times.sort((a, b) => new Date(a.timestamp) <= new Date(b.timestamp) ? -1 : 1)
 
       return times

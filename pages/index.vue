@@ -45,6 +45,7 @@ import Vue, { VueConstructor } from 'vue'
 import BackgroundAnimation from '~/components/BackgroundAnimation.vue'
 import AppSettings from '~/components/AppSettings.vue'
 import UserSettings from '~/components/UserSettings.vue'
+import StatisticsModalContent from '~/components/Statistics/ModalContent.vue'
 import RecentTimes from '~/components/RecentTimes.vue'
 import Timer from '~/components/Timer.vue'
 
@@ -57,6 +58,7 @@ export default Vue.extend({
     AppSettings,
     UserSettings,
     RecentTimes,
+    StatisticsModalContent,
     SweetModal: SweetModal as VueConstructor<Vue>,
     Timer,
   },
