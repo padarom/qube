@@ -18,7 +18,7 @@ export default Vue.extend({
 
   computed: {
     times (): Time[] {
-      return this.$store.getters['times/modeTimes'].slice(0, 5)
+      return this.$accessor.times.modeTimes.slice(0, 5)
     },
   },
 })

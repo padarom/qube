@@ -45,11 +45,11 @@ export default Vue.extend({
   computed: {
     timingMethod: {
       get () {
-        return this.$store.state.configuration.timingMethod
+        return this.$accessor.configuration.timingMethod
       },
 
-      set (value) {
-        this.$store.commit('setTimingMethod', value)
+      set (value: AvailableTimingMethods) {
+        this.$accessor.configuration.setTimingMethod(value)
       },
     },
 

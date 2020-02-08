@@ -2,7 +2,7 @@
     <div>
         <div class="timer">
             <h1 class="time" v-if="!record">
-                {{ elapsed.minutes | padded }}:{{ elapsed.seconds | padded }}.{{ elapsed.milliseconds | padded(this.accuracy) }}
+                {{ elapsed.minutes | padded }}:{{ elapsed.seconds | padded }}.{{ elapsed.decimals | padded(this.accuracy) }}
             </h1>
             <h1 class="time filtered" v-else>
                 {{ record | timeDisplay(this.accuracy) }}
@@ -34,6 +34,12 @@ type ElapsedTime = {
   minutes: number
 }
 
+type TimingObject = {
+  decimals: number,
+  seconds: number,
+  minutes: number
+}
+
 export default Vue.extend({
   data () {
     return {
@@ -53,19 +59,19 @@ export default Vue.extend({
   },
 
   computed: {
-    elapsed () {
+    elapsed (): TimingObject {
       const accuracy = Math.pow(10, this.accuracy)
       const milliseconds = Math.round(this.elapsedMilliseconds / (1000 / accuracy))
 
       return {
-        milliseconds: milliseconds % accuracy,
+        decimals: milliseconds % accuracy,
         seconds: Math.floor(milliseconds / accuracy) % 60,
         minutes: Math.floor(milliseconds / accuracy / 60)
       }
     },
 
     timingMethod (): AvailableTimingMethods {
-      return this.$store.state.configuration.timingMethod
+      return this.$accessor.configuration.timingMethod
     },
   },
 
