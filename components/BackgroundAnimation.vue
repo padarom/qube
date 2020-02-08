@@ -61,10 +61,10 @@ export default Vue.extend({
 
     destroyParticle (particle: ParticleObject) {
       return () => {
-        let object = this.objects.find(el => el.id === particle.id)
+        const object = this.objects.find(el => el.id === particle.id)
         if (!object) return
 
-        let index = this.objects.indexOf(object)
+        const index = this.objects.indexOf(object)
         this.objects.splice(index, 1)
       }
     }

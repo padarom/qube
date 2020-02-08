@@ -11,8 +11,9 @@
 import Vue from 'vue'
 import ShapeDefinitions from './Shapes'
 
-let getHeight = (element: Element) =>
-  parseFloat(getComputedStyle(element, null).height.replace('px', ''))
+function getHeight (element: Element): number {
+  return parseFloat(getComputedStyle(element, null).height.replace('px', ''))
+}
 
 export default Vue.extend({
   props: {
@@ -89,7 +90,7 @@ export default Vue.extend({
         return
       }
 
-      let height = getHeight(this.$refs.svg as Element) * this.scale
+      const height = getHeight(this.$refs.svg as Element) * this.scale
 
       if (this.y < -(height * 2)) { // Some extra margin for error
         this.destroy()

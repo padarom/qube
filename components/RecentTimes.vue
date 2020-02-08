@@ -6,9 +6,10 @@
     </aside>
 </template>
 
-<script type="ts">
+<script lang="ts">
 import Vue from 'vue'
-import RecordedTime from './RecordedTime'
+import RecordedTime from './RecordedTime.vue'
+import { Time } from '~/store/times'
 
 export default Vue.extend({
   components: {
@@ -16,10 +17,10 @@ export default Vue.extend({
   },
 
   computed: {
-    times () {
+    times (): Time[] {
       return this.$store.getters['times/modeTimes'].slice(0, 5)
-    }
-  }
+    },
+  },
 })
 </script>
 

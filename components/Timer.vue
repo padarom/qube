@@ -29,9 +29,9 @@ import { Time } from '../store/times'
 import TimingMethod from './TimingMethods/TimingMethod'
 
 type ElapsedTime = {
-    centiseconds: number,
-    seconds: number,
-    minutes: number
+  centiseconds: number,
+  seconds: number,
+  minutes: number
 }
 
 export default Vue.extend({
@@ -49,19 +49,19 @@ export default Vue.extend({
   mounted () {
     this.timeEmitter.addEventListener(TimeEmitter.Events.TIMER_RESET, () => this.resetTimer())
     this.timeEmitter.addEventListener(TimeEmitter.Events.TIME_UPDATED, (e) => this.updateTime(e))
-    this.timeEmitter.addEventListener(TimeEmitter.Events.TIMER_ENDED, () => this.store())
+    this.timeEmitter.addEventListener(TimeEmitter.Events.TIMER_ENDED, (e) => this.store(e))
   },
 
   computed: {
     elapsed () {
-        let accuracy = Math.pow(10, this.accuracy)
-        let milliseconds = Math.round(this.elapsedMilliseconds / (1000 / accuracy))
+      const accuracy = Math.pow(10, this.accuracy)
+      const milliseconds = Math.round(this.elapsedMilliseconds / (1000 / accuracy))
 
-        return {
-            milliseconds: milliseconds % accuracy,
-            seconds: Math.floor(milliseconds / accuracy) % 60,
-            minutes: Math.floor(milliseconds / accuracy / 60)
-        }
+      return {
+        milliseconds: milliseconds % accuracy,
+        seconds: Math.floor(milliseconds / accuracy) % 60,
+        minutes: Math.floor(milliseconds / accuracy / 60)
+      }
     },
 
     timingMethod (): AvailableTimingMethods {
@@ -76,7 +76,8 @@ export default Vue.extend({
         if (this.method) this.method.teardown()
         delete this.method
 
-        let TimingMethodConstructor = TimingMethods[value] as any
+        // @TODO: Figure out a better typing
+        const TimingMethodConstructor = TimingMethods[value] as any
         this.method = new TimingMethodConstructor()
         this.method!.attachEmitter(this.timeEmitter)
 
@@ -97,8 +98,8 @@ export default Vue.extend({
 
     async store (e: any) {
       this.elapsedMilliseconds = e.detail
-      
-      let record = {
+
+      const record = {
         id: shortid.generate(),
         time: Math.floor(this.elapsedMilliseconds / 10),
         timestamp: new Date(),
@@ -113,7 +114,7 @@ export default Vue.extend({
     },
 
     togglePenalty () {
-      let record = this.record as Time
+      const record = this.record as Time
       this.$set(record as Time, 'penalty', !record.penalty)
       if (record.penalty) {
         this.$set(record, 'dnf', false)
@@ -123,7 +124,7 @@ export default Vue.extend({
     },
 
     toggleDnf () {
-      let record = this.record as Time
+      const record = this.record as Time
       this.$set(record, 'dnf', !record.dnf)
       if (record.dnf) {
         this.$set(record, 'penalty', false)

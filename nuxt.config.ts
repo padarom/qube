@@ -1,6 +1,6 @@
-import NuxtConfiguration from '@nuxt/config'
+import { Configuration } from '@nuxt/types'
 
-const config: NuxtConfiguration = {
+const config: Configuration = {
   mode: 'spa',
 
   /*
@@ -70,6 +70,11 @@ const config: NuxtConfiguration = {
         }
     }],
   ],
+  
+  buildModules: [
+    '@nuxt/typescript-build',
+    'nuxt-typed-vuex',
+  ],
 
   styleResources: {
     stylus: [
@@ -81,9 +86,9 @@ const config: NuxtConfiguration = {
   ** Build configuration
   */
   build: {
-    /*
-    ** You can extend webpack config here
-    */
+    transpile: [
+      /typed-vuex/,
+    ],
     extend() {
     }
   }

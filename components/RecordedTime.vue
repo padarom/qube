@@ -11,12 +11,12 @@
 import Vue from 'vue'
 
 export default Vue.extend({
-    props: {
-        time: {
-            type: Object,
-            required: true
-        }
+  props: {
+    time: {
+      type: Object,
+      required: true
     }
+  }
 })
 </script>
 

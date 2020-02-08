@@ -41,18 +41,26 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { VueConstructor } from 'vue'
 import BackgroundAnimation from '~/components/BackgroundAnimation.vue'
 import AppSettings from '~/components/AppSettings.vue'
 import UserSettings from '~/components/UserSettings.vue'
 import RecentTimes from '~/components/RecentTimes.vue'
-import ModalContent from '~/components/Statistics/ModalContent.vue'
 import Timer from '~/components/Timer.vue'
 
 // @ts-ignore
 import { SweetModal } from 'sweet-modal-vue'
 
 export default Vue.extend({
+  components: {
+    BackgroundAnimation,
+    AppSettings,
+    UserSettings,
+    RecentTimes,
+    SweetModal: SweetModal as VueConstructor<Vue>,
+    Timer,
+  },
+
   computed: {
     mode: {
       get () {
