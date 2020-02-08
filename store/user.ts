@@ -1,23 +1,22 @@
-export interface State {
-    user: null | object
-}
+import { getAccessorType, mutationTree } from 'typed-vuex'
+import * as firebase from 'firebase'
 
-const state = (): State => ({
-    user: null
+export const state = () => ({
+  user: undefined as firebase.UserInfo | undefined,
 })
 
-const mutations = {
-    setUser (state: State, user: object) {
-        state.user = user
-    }
-}
+export type RootState = ReturnType<typeof state>
 
-const actions = {
+export const mutations = mutationTree(state, {
+  setUser (state, user: firebase.User | null) {
+    // We need to serialize the user object, otherwise its own logic will keep
+    // updating itself, which triggers errors about invalid state mutations.
 
-}
+    state.user = user?.toJSON() as firebase.UserInfo | undefined
+  }
+})
 
-export default {
-    state,
-    mutations,
-    actions,
-}
+export const accessorType = getAccessorType({
+  state,
+  mutations,
+})

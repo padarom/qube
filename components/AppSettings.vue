@@ -38,38 +38,40 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import Vue from 'vue'
 import { AvailableTimingMethods } from './TimingMethods'
 
-@Component
-export default class extends Vue {
-    get timingMethod () {
-        return this.$store.state.configuration.timingMethod
-    }
+export default Vue.extend({
+  computed: {
+    timingMethod: {
+      get () {
+        return this.$accessor.configuration.timingMethod
+      },
 
-    set timingMethod (value) {
-        this.$store.commit('setTimingMethod', value)
-    }
+      set (value: AvailableTimingMethods) {
+        this.$accessor.configuration.setTimingMethod(value)
+      },
+    },
 
-    get timingMethods (): typeof AvailableTimingMethods {
-        return AvailableTimingMethods
+    timingMethods (): typeof AvailableTimingMethods {
+      return AvailableTimingMethods
     }
-}
+  }
+})
 </script>
 
 <style scoped lang="stylus">
-    .timing
-        li
-            display: flex
-            text-align: left
-            list-style: none
+  .timing
+    li
+      display: flex
+      text-align: left
+      list-style: none
 
-        label
-            padding-left: 20px
-            padding-bottom: 15px
+    label
+      padding-left: 20px
+      padding-bottom: 15px
 
-        .title
-            display: block
-            font-weight: bold
-
+    .title
+      display: block
+      font-weight: bold
 </style>

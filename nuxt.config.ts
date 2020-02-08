@@ -1,11 +1,11 @@
-import NuxtConfiguration from '@nuxt/config'
+import { Configuration } from '@nuxt/types'
 
-const config: NuxtConfiguration = {
+const config: Configuration = {
   mode: 'spa',
 
   /*
   ** Headers of the page
-  */
+  */ 
   head: {
     title: 'Qube',
     meta: [
@@ -14,7 +14,7 @@ const config: NuxtConfiguration = {
       { hid: 'description', name: 'description', content: process.env.npm_package_description || '' }
     ],
     script: [
-        { src: 'https://kit.fontawesome.com/20bdd8bf1b.js', type: 'text/javascript', integrity: 'sha384-WAsFbnLEQcpCk8lM1UTWesAf5rGTCvb2Y+8LvyjAAcxK1c3s5c0L+SYOgxvc6PWG', crossorigin: 'anonymous' }
+      { src: 'https://kit.fontawesome.com/20bdd8bf1b.js', type: 'text/javascript', integrity: 'sha384-WAsFbnLEQcpCk8lM1UTWesAf5rGTCvb2Y+8LvyjAAcxK1c3s5c0L+SYOgxvc6PWG', crossorigin: 'anonymous' }
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
@@ -38,6 +38,7 @@ const config: NuxtConfiguration = {
   ** Plugins to load before mounting the App
   */
   plugins: [
+    '~plugins/auth',
     '~plugins/filters',
   ],
 
@@ -49,15 +50,35 @@ const config: NuxtConfiguration = {
     '@nuxtjs/eslint-module',
     '@nuxtjs/style-resources',
     [
-        '@nuxtjs/google-adsense', {
-            id: 'ca-pub-2592802788414327',
-        }
+      '@nuxtjs/google-adsense', {
+        id: 'ca-pub-2592802788414327',
+      }
     ],
+    ['nuxt-fire', {
+        config: {
+          apiKey: 'AIzaSyBykYa61kZAhjQTmUUYjLIVN7UvUeYfXrc',
+          authDomain: 'qube-timer.firebaseapp.com',
+          databaseURL: 'https://qube-timer.firebaseio.com',
+          projectId: 'qube-timer',
+          storageBucket: 'qube-timer.appspot.com',
+          messagingSenderId: '155102122747',
+          appId: '1:155102122747:web:0a8d7e52bd4c9da402965e',
+        },
+        services: {
+          auth: true,
+          firestore: true,
+        }
+    }],
+  ],
+  
+  buildModules: [
+    '@nuxt/typescript-build',
+    'nuxt-typed-vuex',
   ],
 
   styleResources: {
     stylus: [
-        'assets/styl/variables.styl'
+      'assets/styl/variables.styl'
     ]
   },
 
@@ -65,9 +86,9 @@ const config: NuxtConfiguration = {
   ** Build configuration
   */
   build: {
-    /*
-    ** You can extend webpack config here
-    */
+    transpile: [
+      /typed-vuex/,
+    ],
     extend() {
     }
   }

@@ -35,76 +35,78 @@
     </div>
 </template>
 
-<script>
-import RecordedTime from '../RecordedTime'
-import TimeChart from './TimeChart'
+<script lang="ts">
+import Vue from 'vue'
+import RecordedTime from '../RecordedTime.vue'
+import TimeChart from './TimeChart.vue'
 import { minBy } from 'lodash'
 import { getAverageOf } from './helpers'
+import { Time } from '~/store/times'
 
-export default {
-    components: {
-        RecordedTime, TimeChart
+export default Vue.extend({
+  components: {
+    RecordedTime, TimeChart
+  },
+
+  computed: {
+    times (): Time[] {
+      let times = this.$accessor.times.modeTimes
+      times.sort((a, b) => new Date(a.timestamp) <= new Date(b.timestamp) ? -1 : 1)
+
+      return times
     },
 
-    computed: {
-        reverseTimes () {
-            return this.times.slice().reverse()
-        },
+    reverseTimes (): Time[] {
+      return this.times.slice().reverse()
+    },
 
-        times () {
-            let times = this.$store.getters['times/modeTimes'].slice()
-            times.sort((a, b) => new Date(a.timestamp) <= new Date(b.timestamp) ? -1 : 1)
+    bestTime (): Time | undefined {
+      return minBy(this.times, 'time')
+    },
 
-            return times
-        },
+    averagesOfFive (): Time[] {
+      return getAverageOf(5, this.times)
+    },
 
-        bestTime () {
-            return minBy(this.times, 'time')
-        },
+    lastAverageOfFive (): Time | undefined {
+      return this.averagesOfFive.slice(-1).pop()
+    },
 
-        averagesOfFive () {
-            return getAverageOf(5, this.times)
-        },
+    bestAverageOfFive (): Time | undefined {
+      return minBy(this.averagesOfFive, 'time')
+    },
 
-        lastAverageOfFive () {
-            return this.averagesOfFive.slice(-1).pop()
-        },
+    averagesOfTwelve (): Time[] {
+      return getAverageOf(12, this.times)
+    },
 
-        bestAverageOfFive () {
-            return minBy(this.averagesOfFive, 'time')
-        },
+    lastAverageOfTwelve (): Time | undefined {
+      return this.averagesOfTwelve.slice(-1).pop()
+    },
 
-        averagesOfTwelve () {
-            return getAverageOf(12, this.times)
-        },
-
-        lastAverageOfTwelve () {
-            return this.averagesOfTwelve.slice(-1).pop()
-        },
-
-        bestAverageOfTwelve () {
-            return minBy(this.averagesOfTwelve, 'time')
-        }
-    }
-}
+    bestAverageOfTwelve (): Time | undefined {
+      return minBy(this.averagesOfTwelve, 'time')
+    },
+  }
+})
 </script>
 
 <style lang="stylus" scoped>
 .textual
-    display: flex
-    flex-direction: row
-    justify-content: space-between
+  display: flex
+  flex-direction: row
+  justify-content: space-between
 
-    .column
-        flex: 1
+  .column
+    flex: 1
 
 .statistics
-    text-align: left
+  text-align: left
 
 .list
-    max-height: 300px
-    overflow-y: scroll
+  max-height: 300px
+  overflow-y: scroll
 
-    li
-        list-style: none
+  li
+    list-style: none
 </style>
