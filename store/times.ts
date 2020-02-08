@@ -1,4 +1,5 @@
 import { getAccessorType, mutationTree, getterTree } from 'typed-vuex'
+import { AvailableTimingMethods } from '~/components/TimingMethods'
 
 export interface Time {
   id: string,
@@ -7,7 +8,7 @@ export interface Time {
   penalty?: boolean,
   timestamp: Date,
   mode: string,
-  timingMethod?: string
+  timingMethod?: AvailableTimingMethods
 }
 
 export const state = () => ({

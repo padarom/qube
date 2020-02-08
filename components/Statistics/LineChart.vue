@@ -1,21 +1,22 @@
-<script>
+<script type="ts">
+import Vue from 'vue'
 import { Line, mixins } from 'vue-chartjs'
 
-export default {
-    extends: Line,
+export default Vue.extend({
+  extends: Line,
 
-    props: [ 'options' ],
+  props: [ 'options' ],
 
-    mixins: [ mixins.reactiveProp ],
+  mixins: [ mixins.reactiveProp ],
 
-    watch: {
-        options () {
-            this.renderChart(this.chartData, this.options)
-        }
-    },
-
-    mounted () {
-        this.renderChart(this.chartData, this.options)
+  watch: {
+    options () {
+      this.renderChart(this.chartData, this.options)
     }
-}
+  },
+
+  mounted () {
+    this.renderChart(this.chartData, this.options)
+  }
+})
 </script>

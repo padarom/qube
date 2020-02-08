@@ -6,42 +6,39 @@
     </aside>
 </template>
 
-<script>
+<script type="ts">
+import Vue from 'vue'
 import RecordedTime from './RecordedTime'
 
-export default {
-    components: {
-        RecordedTime
-    },
+export default Vue.extend({
+  components: {
+    RecordedTime
+  },
 
-    computed: {
-        times () {
-            return this.$store.getters['times/modeTimes'].slice(0, 5)
-        }
+  computed: {
+    times () {
+      return this.$store.getters['times/modeTimes'].slice(0, 5)
     }
-}
+  }
+})
 </script>
 
-<style scoped>
-    .recent {
-        position: absolute;
-        right: 0;
-        margin-right: 16px;
-    }
+<style lang="stylus" scoped>
+  .recent
+    position: absolute
+    right: 0
+    margin-right: 16px
 
-    .list-enter-active, .list-leave-active {
-        transition: all 1s;
-    }
+  .list-enter-active, .list-leave-active
+    transition: all 1s
 
-    .list-enter {
-        position: relative;
-        z-index: 3;
-        opacity: 0;
-        margin-bottom: -27px;
-    }
+  .list-enter
+    position: relative
+    z-index: 3
+    opacity: 0
+    margin-bottom: -27px
 
-    .list-leave-to {
-        opacity: 0;
-        margin-bottom: -30px !important;
-    }
+  .list-leave-to
+    opacity: 0
+    margin-bottom: -30px !important
 </style>

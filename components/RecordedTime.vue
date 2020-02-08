@@ -7,15 +7,17 @@
     </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from 'vue'
+
+export default Vue.extend({
     props: {
         time: {
             type: Object,
             required: true
         }
     }
-}
+})
 </script>
 
 <style lang="stylus">

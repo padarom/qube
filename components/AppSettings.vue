@@ -43,7 +43,6 @@ import { AvailableTimingMethods } from './TimingMethods'
 
 export default Vue.extend({
   computed: {
-      
     timingMethod: {
       get () {
         return this.$store.state.configuration.timingMethod
