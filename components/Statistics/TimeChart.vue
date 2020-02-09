@@ -19,7 +19,7 @@ import Vue, { PropType } from 'vue'
 import moment from 'moment'
 import LineChart from './LineChart.vue'
 import { getAverageOf } from './helpers'
-import { SolvingTime } from '~/types/SolvingTime'
+import SolvingTime from '~/types/SolvingTime'
 import { Line, mixins } from 'vue-chartjs'
 import { ChartOptions, ChartData } from 'chart.js'
 

@@ -1,5 +1,5 @@
 import { getAccessorType, mutationTree, getterTree } from 'typed-vuex'
-import { SolvingTime } from '~/types/SolvingTime'
+import SolvingTime from '~/types/SolvingTime'
 
 export const state = () => ({
   list: {} as { [s: string]: SolvingTime },

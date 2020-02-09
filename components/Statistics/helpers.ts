@@ -1,4 +1,4 @@
-import { SolvingTime } from '~/types/SolvingTime'
+import SolvingTime from '~/types/SolvingTime'
 
 export function getAverageOf (n: number, times: SolvingTime[]) {
   return times.reduce((acc, time) => {

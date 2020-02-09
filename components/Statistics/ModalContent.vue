@@ -41,7 +41,7 @@ import RecordedTime from '../RecordedTime.vue'
 import TimeChart from './TimeChart.vue'
 import { minBy } from 'lodash'
 import { getAverageOf } from './helpers'
-import { SolvingTime } from '~/types/SolvingTime'
+import SolvingTime from '~/types/SolvingTime'
 
 export default Vue.extend({
   components: {

@@ -1,13 +1,14 @@
 <script lang="ts">
-import TimingMethod from './TimingMethod.vue'
+import IntervalBasedTimer from './IntervalBasedTimer.vue'
 import RS232Decoder from './RS232Decoder'
+import TimingState, { State } from '~/types/TimingState'
 
 type StackMatStatus = {
   status: string,
   digits: string[]
 }
 
-export default TimingMethod.extend({
+export default IntervalBasedTimer.extend({
   data () {
     const audioContext = new AudioContext()
 
@@ -77,21 +78,26 @@ export default TimingMethod.extend({
 
       // Always emit the current time
       const milliseconds = parseInt(state.digits.join(''))
-      // this.emitter.setTime(milliseconds)
+      this.updateState({ time: { milliseconds, decimals: 3 } })
 
       if (this.previousState) {
         const previousMilliseconds = parseInt(this.previousState.digits.join(''))
         const hasStateChanged = this.previousState.status !== state.status || milliseconds !== previousMilliseconds
 
-        // if (milliseconds == 0 && state.status == 'I') this.emitter.ready()
+        if (milliseconds === 0 && state.status === 'I') this.updateState({ state: State.READY })
 
         if (hasStateChanged) {
-          // this.emitter.hintUpdated()
+          if (this.previousState.status !== ' ' && state.status === ' ' && this.value.state !== State.RUNNING) {
+            this.startTimer()
+            this.updateState({ state: State.RUNNING })
+          }
 
-          // if (this.previousState.status != ' ' && state.status == ' ') this.emitter.start()
-          // if (this.previousState.status == ' ' && state.status == 'I') this.emitter.stop(milliseconds)
+          if (this.previousState.status === ' ' && state.status === 'I') {
+            this.stopTimer()
+            this.updateState({ state: State.FINISHED })
+          }
           if (previousMilliseconds > milliseconds) {
-            // this.emitter.reset()
+            this.updateState({ state: State.READY })
           }
         }
       }

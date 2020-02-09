@@ -1,13 +1,16 @@
 <template>
     <div>
         <div class="timer">
-            <h1 class="time">
-                {{ elapsed.minutes | padded }}:{{ elapsed.seconds | padded }}.{{ elapsed.decimals | padded(this.accuracy) }}
+            <h1 class="time" v-if="finished">
+                {{ currentSolve.time | timeDisplay }}
+            </h1>
+            <h1 class="time" v-else>
+                {{ elapsed.minutes | padded }}:{{ elapsed.seconds | padded }}.{{ elapsed.decimals | padded(this.decimals) }}
             </h1>
 
             <div class="adjustments" v-if="finished">
-                <button @click="togglePenalty" :class="{ active: currentSolve.penalty }">+2</button>
-                <button @click="toggleDnf" :class="{ active: currentSolve.dnf }">DNF</button>
+                <button @click="togglePenalty" :class="{ active: currentSolve.time.penalty }">+2</button>
+                <button @click="toggleDnf" :class="{ active: currentSolve.time.dnf }">DNF</button>
             </div>
         </div>
 
@@ -15,8 +18,7 @@
             <component
               :is="timingMethodComponent"
               v-model="currentSolve"
-              @ended="store"
-              @reset="resetTimer"
+              @state-changed="stateChanged"
             />
         </aside>
     </div>
@@ -25,16 +27,8 @@
 <script lang="ts">
 import Vue from 'vue'
 import TimingMethods, { AvailableTimingMethods } from './TimingMethods'
-import TimeEmitter from './TimeEmitter'
-import shortid from 'shortid'
-import { SolvingTime, createSolvingTime } from '~/types/SolvingTime'
+import TimingState, { State, createTimingState } from '~/types/TimingState'
 import TimingMethod from './TimingMethods/TimingMethod.vue'
-
-type ElapsedTime = {
-  centiseconds: number,
-  seconds: number,
-  minutes: number
-}
 
 type TimingObject = {
   decimals: number,
@@ -45,22 +39,28 @@ type TimingObject = {
 export default Vue.extend({
   data () {
     return {
-      currentSolve: createSolvingTime('3x3'),
-      finished: false,
-      accuracy: 2,
+      currentSolve: createTimingState('3x3'),
     }
   },
 
   computed: {
     elapsed (): TimingObject {
-      const accuracy = Math.pow(10, this.accuracy)
-      const milliseconds = Math.round(this.currentSolve.milliseconds / (1000 / accuracy))
+      const accuracy = Math.pow(10, this.decimals)
+      const milliseconds = Math.round(this.currentSolve.time.milliseconds / (1000 / accuracy))
 
       return {
         decimals: milliseconds % accuracy,
         seconds: Math.floor(milliseconds / accuracy) % 60,
         minutes: Math.floor(milliseconds / accuracy / 60)
       }
+    },
+
+    finished (): boolean {
+      return this.currentSolve.state === State.FINISHED
+    },
+
+    decimals (): number {
+      return this.currentSolve.time.decimals || 2
     },
 
     selectedMode (): string {
@@ -76,43 +76,61 @@ export default Vue.extend({
     }
   },
 
-  methods: {
-    createNewTime () {
-      const time = createSolvingTime(this.selectedMode)
-      time.timingMethod = this.selectedTimingMethod
-
-      this.currentSolve = time
-    },
-
-    resetTimer () {
+  watch: {
+    selectedTimingMethod () {
       this.createNewTime()
-      this.finished = false
     },
 
-    async store (e: any) {
-      this.currentSolve.created = new Date()
+    selectedMode () {
+      this.createNewTime()
+    },
+  },
 
-      this.$store.dispatch('times/insert', this.currentSolve)
+  methods: {
+    stateChanged (newState: State, oldState: State) {
+      if (newState === oldState) return
+
+      // Timing is complete
+      if (newState === State.FINISHED) {
+        this.storeTime()
+      }
+
+      // Timing was previously complete but is now being reset
+      if (newState === State.READY && oldState === State.FINISHED) {
+        this.$nextTick(() => {
+          this.createNewTime(newState)
+        })
+      }
+    },
+
+    createNewTime (state: State = State.WAITING) {
+      this.currentSolve = createTimingState(this.selectedMode)
+      this.currentSolve.time.timingMethod = this.selectedTimingMethod
+      this.currentSolve.state = state
+    },
+
+    async storeTime () {
+      this.currentSolve.time.created = new Date()
+
+      this.$store.dispatch('times/insert', this.currentSolve.time)
     },
 
     togglePenalty () {
-      const currentSolve = this.currentSolve!
-      this.$set(currentSolve as SolvingTime, 'penalty', !currentSolve.penalty)
-      if (currentSolve.penalty) {
-        this.$set(currentSolve, 'dnf', false)
+      this.currentSolve.time.penalty = !this.currentSolve.time.penalty
+      if (this.currentSolve.time.penalty) {
+        this.currentSolve.time.dnf = false
       }
 
-      this.$store.dispatch('times/patch', this.currentSolve)
+      this.$store.dispatch('times/patch', this.currentSolve.time)
     },
 
     toggleDnf () {
-      const currentSolve = this.currentSolve!
-      this.$set(currentSolve, 'dnf', !currentSolve.dnf)
-      if (currentSolve.dnf) {
-        this.$set(currentSolve, 'penalty', false)
+      this.currentSolve.time.dnf = !this.currentSolve.time.dnf
+      if (this.currentSolve.time.dnf) {
+        this.currentSolve.time.penalty = false
       }
 
-      this.$store.dispatch('times/patch', this.currentSolve)
+      this.$store.dispatch('times/patch', this.currentSolve.time)
     },
   },
 })

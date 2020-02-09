@@ -9,7 +9,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import RecordedTime from './RecordedTime.vue'
-import { SolvingTime } from '~/types/SolvingTime'
+import SolvingTime from '~/types/SolvingTime'
 
 export default Vue.extend({
   components: {

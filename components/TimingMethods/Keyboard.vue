@@ -1,11 +1,12 @@
 <template>
   <div>
-    Press <kbd>Spacebar</kbd> to start the timer
+    Press <kbd>Spacebar</kbd> to start and stop the timer
   </div>
 </template>
 
 <script lang="ts">
 import IntervalBasedTimer from './IntervalBasedTimer.vue'
+import { State } from '~/types/TimingState'
 
 export default IntervalBasedTimer.extend({
   data () {
@@ -38,13 +39,11 @@ export default IntervalBasedTimer.extend({
       if (!this.spaceReleased) return
       this.spaceReleased = false
 
-      this.stopTimer()
-      // if (this.emitter.isRunning) {
-      //   this.emitter.stop()
-      // } else {
-      //   this.emitter.reset()
-      //   this.emitter.ready()
-      // }
+      if (this.value.state === State.RUNNING) {
+        this.stopTimer()
+      } else {
+        this.updateState({ state: State.READY })
+      }
     },
 
     /**
@@ -56,9 +55,8 @@ export default IntervalBasedTimer.extend({
       if (event.key !== ' ') return
       this.spaceReleased = true
 
+      if (this.value.state === State.RUNNING || this.value.state !== State.READY) return
       this.startTimer()
-      // if (this.emitter.isRunning || !this.emitter.isReady) return
-      // this.emitter.start()
     },
   },
 })

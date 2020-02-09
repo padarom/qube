@@ -6,7 +6,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { AvailableTimingMethods } from './TimingMethods'
 
 export default Vue.extend({
   computed: {
