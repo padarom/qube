@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { SolvingTime } from '~/store/times'
+import { SolvingTime } from '~/types/SolvingTime'
 
 Vue.filter('padded', (value: number, length: number = 2, symbol: string = '0') => {
   return String(value).padStart(length, symbol)

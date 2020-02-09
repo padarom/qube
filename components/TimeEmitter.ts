@@ -4,7 +4,8 @@ export default class TimeEmitter extends EventTarget {
     TIMER_STARTED: 'TIMER_STARTED',
     TIMER_ENDED: 'TIMER_ENDED',
     TIMER_RESET: 'TIMER_RESET',
-    TIMER_READY: 'TIMER_READY'
+    TIMER_READY: 'TIMER_READY',
+    HINT_UPDATED: 'HINT_UPDATED',
   }
 
   private _time: number = 0
@@ -69,5 +70,9 @@ export default class TimeEmitter extends EventTarget {
     this.time = 0
 
     this.dispatchEvent(new CustomEvent(TimeEmitter.Events.TIMER_RESET))
+  }
+
+  hintUpdated () {
+    this.dispatchEvent(new CustomEvent(TimeEmitter.Events.HINT_UPDATED))
   }
 }

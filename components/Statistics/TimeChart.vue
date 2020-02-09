@@ -19,7 +19,7 @@ import Vue, { PropType } from 'vue'
 import moment from 'moment'
 import LineChart from './LineChart.vue'
 import { getAverageOf } from './helpers'
-import { SolvingTime } from '~/store/times'
+import { SolvingTime } from '~/types/SolvingTime'
 import { Line, mixins } from 'vue-chartjs'
 import { ChartOptions, ChartData } from 'chart.js'
 
@@ -61,7 +61,7 @@ export default Vue.extend({
 
   computed: {
     chartData (): ChartData {
-      const labels = this.times.map(time => time.timestamp)
+      const labels = this.times.map(time => time.created)
 
       const generateAverage = (list: SolvingTime[], label: string, color: string) => ({
         label,
@@ -75,7 +75,7 @@ export default Vue.extend({
         data: list
           .map(time => ({
             ...time,
-            x: labels.indexOf(time.timestamp),
+            x: labels.indexOf(time.created),
             y: time.milliseconds
           }))
       })
@@ -118,7 +118,7 @@ export default Vue.extend({
               const datasets = object.datasets
               const value = object.datasets![datasetIndex as number].data![index as number] as SolvingTime
 
-              return moment(value.timestamp).format('LLL')
+              return moment(value.created).format('LLL')
             }
           }
         },

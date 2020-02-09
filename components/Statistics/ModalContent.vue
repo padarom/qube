@@ -41,7 +41,7 @@ import RecordedTime from '../RecordedTime.vue'
 import TimeChart from './TimeChart.vue'
 import { minBy } from 'lodash'
 import { getAverageOf } from './helpers'
-import { SolvingTime } from '~/store/times'
+import { SolvingTime } from '~/types/SolvingTime'
 
 export default Vue.extend({
   components: {
@@ -51,7 +51,7 @@ export default Vue.extend({
   computed: {
     times (): SolvingTime[] {
       const times = this.$accessor.times.modeTimes
-      times.sort((a, b) => new Date(a.timestamp) <= new Date(b.timestamp) ? -1 : 1)
+      times.sort((a, b) => new Date(a.created) <= new Date(b.created) ? -1 : 1)
 
       return times
     },

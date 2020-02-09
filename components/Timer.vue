@@ -1,21 +1,23 @@
 <template>
     <div>
         <div class="timer">
-            <h1 class="time" v-if="!record">
+            <h1 class="time">
                 {{ elapsed.minutes | padded }}:{{ elapsed.seconds | padded }}.{{ elapsed.decimals | padded(this.accuracy) }}
             </h1>
-            <h1 class="time filtered" v-else>
-                {{ record | timeDisplay(this.accuracy) }}
-            </h1>
 
-            <div class="adjustments" v-if="record">
-                <button @click="togglePenalty" :class="{ active: record.penalty }">+2</button>
-                <button @click="toggleDnf" :class="{ active: record.dnf }">DNF</button>
+            <div class="adjustments" v-if="finished">
+                <button @click="togglePenalty" :class="{ active: currentSolve.penalty }">+2</button>
+                <button @click="toggleDnf" :class="{ active: currentSolve.dnf }">DNF</button>
             </div>
         </div>
 
         <aside class="hint">
-            <span v-html="methodHint" />
+            <component
+              :is="timingMethodComponent"
+              v-model="currentSolve"
+              @ended="store"
+              @reset="resetTimer"
+            />
         </aside>
     </div>
 </template>
@@ -25,8 +27,8 @@ import Vue from 'vue'
 import TimingMethods, { AvailableTimingMethods } from './TimingMethods'
 import TimeEmitter from './TimeEmitter'
 import shortid from 'shortid'
-import { SolvingTime } from '../store/times'
-import TimingMethod from './TimingMethods/TimingMethod'
+import { SolvingTime, createSolvingTime } from '~/types/SolvingTime'
+import TimingMethod from './TimingMethods/TimingMethod.vue'
 
 type ElapsedTime = {
   centiseconds: number,
@@ -43,25 +45,16 @@ type TimingObject = {
 export default Vue.extend({
   data () {
     return {
-      record: null as SolvingTime | null,
-      elapsedMilliseconds: 0,
-      timeEmitter: new TimeEmitter(),
-      method: null as TimingMethod | null,
-      methodHint: '',
+      currentSolve: createSolvingTime('3x3'),
+      finished: false,
       accuracy: 2,
     }
-  },
-
-  mounted () {
-    this.timeEmitter.addEventListener(TimeEmitter.Events.TIMER_RESET, () => this.resetTimer())
-    this.timeEmitter.addEventListener(TimeEmitter.Events.TIME_UPDATED, (e) => this.updateTime(e))
-    this.timeEmitter.addEventListener(TimeEmitter.Events.TIMER_ENDED, (e) => this.store(e))
   },
 
   computed: {
     elapsed (): TimingObject {
       const accuracy = Math.pow(10, this.accuracy)
-      const milliseconds = Math.round(this.elapsedMilliseconds / (1000 / accuracy))
+      const milliseconds = Math.round(this.currentSolve.milliseconds / (1000 / accuracy))
 
       return {
         decimals: milliseconds % accuracy,
@@ -70,73 +63,56 @@ export default Vue.extend({
       }
     },
 
-    timingMethod (): AvailableTimingMethods {
+    selectedMode (): string {
+      return this.$accessor.configuration.mode
+    },
+
+    selectedTimingMethod (): AvailableTimingMethods {
       return this.$accessor.configuration.timingMethod
     },
-  },
 
-  watch: {
-    timingMethod: {
-      immediate: true,
-      handler (value: AvailableTimingMethods) {
-        if (this.method) this.method.teardown()
-        delete this.method
-
-        // @TODO: Figure out a better typing
-        const TimingMethodConstructor = TimingMethods[value] as any
-        this.method = new TimingMethodConstructor()
-        this.method!.attachEmitter(this.timeEmitter)
-
-        this.methodHint = this.method!.hint()
-      }
+    timingMethodComponent (): typeof TimingMethod {
+      return TimingMethods[this.selectedTimingMethod]
     }
   },
 
   methods: {
-    resetTimer () {
-      this.elapsedMilliseconds = 0
-      this.record = null
+    createNewTime () {
+      const time = createSolvingTime(this.selectedMode)
+      time.timingMethod = this.selectedTimingMethod
+
+      this.currentSolve = time
     },
 
-    updateTime (e: any) {
-      this.elapsedMilliseconds = e.detail
+    resetTimer () {
+      this.createNewTime()
+      this.finished = false
     },
 
     async store (e: any) {
-      this.elapsedMilliseconds = e.detail
+      this.currentSolve.created = new Date()
 
-      const record = {
-        id: shortid.generate(),
-        milliseconds: Math.floor(this.elapsedMilliseconds / 10),
-        timestamp: new Date(),
-        dnf: false,
-        penalty: false,
-        mode: this.$accessor.configuration.mode,
-        timingMethod: this.$accessor.configuration.timingMethod
-      }
-
-      this.record = record
-      this.$store.dispatch('times/insert', record)
+      this.$store.dispatch('times/insert', this.currentSolve)
     },
 
     togglePenalty () {
-      const record = this.record as SolvingTime
-      this.$set(record as SolvingTime, 'penalty', !record.penalty)
-      if (record.penalty) {
-        this.$set(record, 'dnf', false)
+      const currentSolve = this.currentSolve!
+      this.$set(currentSolve as SolvingTime, 'penalty', !currentSolve.penalty)
+      if (currentSolve.penalty) {
+        this.$set(currentSolve, 'dnf', false)
       }
 
-      this.$store.dispatch('times/patch', this.record)
+      this.$store.dispatch('times/patch', this.currentSolve)
     },
 
     toggleDnf () {
-      const record = this.record as SolvingTime
-      this.$set(record, 'dnf', !record.dnf)
-      if (record.dnf) {
-        this.$set(record, 'penalty', false)
+      const currentSolve = this.currentSolve!
+      this.$set(currentSolve, 'dnf', !currentSolve.dnf)
+      if (currentSolve.dnf) {
+        this.$set(currentSolve, 'penalty', false)
       }
 
-      this.$store.dispatch('times/patch', this.record)
+      this.$store.dispatch('times/patch', this.currentSolve)
     },
   },
 })

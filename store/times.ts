@@ -1,15 +1,5 @@
 import { getAccessorType, mutationTree, getterTree } from 'typed-vuex'
-import { AvailableTimingMethods } from '~/components/TimingMethods'
-
-export interface SolvingTime {
-  id: string,
-  milliseconds: number,
-  dnf?: boolean,
-  penalty?: boolean,
-  timestamp: Date,
-  mode: string,
-  timingMethod?: AvailableTimingMethods,
-}
+import { SolvingTime } from '~/types/SolvingTime'
 
 export const state = () => ({
   list: {} as { [s: string]: SolvingTime },
@@ -23,7 +13,7 @@ export const getters = getterTree(state, {
       .map(id => state.list[id])
       .filter(time => time.mode == rootState.configuration.mode)
       .sort((a, b) => {
-        return a.timestamp < b.timestamp ? 1 : -1
+        return a.created < b.created ? 1 : -1
       })
   }
 })

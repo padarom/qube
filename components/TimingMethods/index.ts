@@ -1,8 +1,8 @@
-import Accelerometer from './Accelerometer'
-import StackMatG4 from './StackMatG4'
-import Keyboard from './Keyboard'
-import Touch from './Touch'
-import TimingMethod from './TimingMethod'
+import Accelerometer from './Accelerometer.vue'
+import StackMatG4 from './StackMatG4.vue'
+import Keyboard from './Keyboard.vue'
+import Touch from './Touch.vue'
+import TimingMethod from './TimingMethod.vue'
 
 export enum AvailableTimingMethods {
   Accelerometer = 'accelerometer',
