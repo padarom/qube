@@ -1,3 +1,11 @@
+<template>
+  <div>
+    <div v-if="value.state === AvailableStates.WAITING">
+      Waiting for a connection to your StackMat ...
+    </div>
+  </div>
+</template>
+
 <script lang="ts">
 import IntervalBasedTimer from './IntervalBasedTimer.vue'
 import RS232Decoder from './RS232Decoder'
@@ -16,6 +24,8 @@ export default IntervalBasedTimer.extend({
       audioContext,
       rs232Decoder: new RS232Decoder(audioContext.sampleRate / 1200),
       previousState: null as StackMatStatus | null,
+      AvailableStates: State,
+      unsuccessfulFetches: 0,
     }
   },
 
@@ -69,12 +79,24 @@ export default IntervalBasedTimer.extend({
         data[9] === 13
     },
 
+    invalidSignal () {
+      this.unsuccessfulFetches++
+      if (this.unsuccessfulFetches > 4) {
+        this.updateState({ state: State.WAITING })
+      }
+    },
+
     signalFetched (signal: Float32Array) {
       const packet = this.rs232Decoder.decode(signal)
-      if (!packet) return
+      if (!packet) return this.invalidSignal()
 
       const state = this.decode(packet)
-      if (!state) return
+      if (!state) return this.invalidSignal()
+
+      this.unsuccessfulFetches = 0
+      if (this.value.state === State.WAITING) {
+        this.updateState({ state: State.READY })
+      }
 
       // Always emit the current time
       const milliseconds = parseInt(state.digits.join(''))
