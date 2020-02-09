@@ -11,6 +11,8 @@ export enum AvailableTimingMethods {
   Touch = 'touch'
 }
 
+// @TODO: Figure out the typing issues.
+// @ts-ignore
 export default {
   [AvailableTimingMethods.Accelerometer]: Accelerometer,
   [AvailableTimingMethods.Stackmat]: StackMatG4,
