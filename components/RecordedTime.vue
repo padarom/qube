@@ -32,7 +32,7 @@ export default Vue.extend({
   transition: color 1s
 
   .time .inaccurate
-    opacity: 0.2
+    opacity: 0
 
   .flag
     font-size: 11px

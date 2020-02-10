@@ -38,6 +38,7 @@ const config: Configuration = {
   ** Plugins to load before mounting the App
   */
   plugins: [
+    '~plugins/components',
     '~plugins/auth',
     '~plugins/filters',
   ],

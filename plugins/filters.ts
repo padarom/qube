@@ -1,11 +1,11 @@
 import Vue from 'vue'
 import SolvingTime from '~/types/SolvingTime'
 
-Vue.filter('padded', (value: number, length: number = 2, symbol: string = '0') => {
+export function padded (value: number, length: number = 2, symbol: string = '0') {
   return String(value).padStart(length, symbol)
-})
+}
 
-Vue.filter('timeDisplay', (value: number | SolvingTime, decimals: number = 2) => {
+export function timeDisplay (value: number | SolvingTime, decimals: number = 2) {
   let time = value as number
 
   if (typeof value !== 'number') {
@@ -23,4 +23,7 @@ Vue.filter('timeDisplay', (value: number | SolvingTime, decimals: number = 2) =>
   return String(minutes).padStart(2, '0')
     + ':' + String(seconds % 60).padStart(2, '0')
     + '.' + String(remaining).padStart(decimals, '0')
-})
+}
+
+Vue.filter('padded', padded)
+Vue.filter('timeDisplay', timeDisplay)

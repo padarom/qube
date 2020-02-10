@@ -74,4 +74,7 @@ export default Vue.extend({
     .title
       display: block
       font-weight: bold
+
+    h3
+      text-align: center
 </style>

@@ -37,7 +37,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import RecordedTime from '../RecordedTime.vue'
+import RecordedTime from '~/components/RecordedTime.vue'
 import TimeChart from './TimeChart.vue'
 import { minBy } from 'lodash'
 import { getAverageOf } from './helpers'
