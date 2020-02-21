@@ -50,7 +50,7 @@ export default Vue.extend({
 
   computed: {
     times (): SolvingTime[] {
-      const times = this.$accessor.times.modeTimes
+      const times = this.$firestoreAccessor.modeTimes
       times.sort((a, b) => new Date(a.created) <= new Date(b.created) ? -1 : 1)
 
       return times

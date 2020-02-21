@@ -87,6 +87,10 @@ export default Vue.extend({
       return this.$accessor.user.user
     },
   },
+
+  created () {
+    this.$fireAuth.signInAnonymously()
+  },
 })
 </script>
 

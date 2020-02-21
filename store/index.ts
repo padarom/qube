@@ -1,40 +1,40 @@
 import VuexEasyFirestore from 'vuex-easy-firestore'
 import { getAccessorType } from 'typed-vuex'
 import Vuex from 'vuex'
-import Vue from 'vue'
 
 import * as configuration from './configuration'
-import * as times from './times'
 import * as user from './user'
-
-Vue.use(Vuex)
+import * as times from './times'
 
 // We're exporting the accessorType to gain
 // TypeScript support for our Vuex store.
 export const accessorType = getAccessorType({
   modules: {
     configuration,
-    times,
     user,
   },
 })
 
-// EasyFirestore allows us to automagically synchronize
-// times between Firebase and the local client.
-const easyFirestore = VuexEasyFirestore(
+// We need to export our firestore accessorType separately
+// because there's currently no way to dynamically append modules
+// to the global $accessor instance.
+export const firestoreAccessorType = getAccessorType({
+  modules: { times },
+})
+
+const easyFirestorePlugin = VuexEasyFirestore(
   [times.default],
   { logging: true },
 )
 
 const store = new Vuex.Store({
-  plugins: [easyFirestore],
   modules: {
     // Modules that are included in EasyFirestore cannot be
     // added to the main modules.
     configuration,
     user,
-    times,
   },
+  plugins: [easyFirestorePlugin],
 })
 
 export default () => store

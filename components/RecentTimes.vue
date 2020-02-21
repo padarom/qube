@@ -18,7 +18,7 @@ export default Vue.extend({
 
   computed: {
     times (): SolvingTime[] {
-      return this.$accessor.times.modeTimes.slice(0, 5)
+      return this.$firestoreAccessor.modeTimes.slice(0, 5)
     },
   },
 })

@@ -41,6 +41,7 @@ const config: Configuration = {
     '~plugins/components',
     '~plugins/auth',
     '~plugins/filters',
+    '~plugins/vuexFirestore',
   ],
 
   /*
@@ -67,7 +68,9 @@ const config: Configuration = {
         },
         services: {
           auth: true,
-          firestore: true,
+          firestore: {
+            enablePersistence: true,
+          },
         }
     }],
   ],
