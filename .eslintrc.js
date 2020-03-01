@@ -30,5 +30,6 @@ module.exports = {
     'no-unused-vars': 'off', // process.env.NODE_ENV === 'production' ? 'error' : 'warn',
     indent: ['warn', 2],
     'comma-dangle': 'off',
+    'spaced-comment': 'warn',
   }
 }

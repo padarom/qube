@@ -24,8 +24,8 @@
 
         <nav class="navigation">
             <ul>
-                <li v-if="user" @click="$modal.show('usersettings')">{{ user.displayName ? user.displayName : user.email }}</li>
-                <li v-else @click="$modal.show('login')">Login</li>
+                <li v-if="user" @click="$modal.show('user')">{{ user.displayName ? user.displayName : user.email }}</li>
+                <li v-else @click="$modal.show('user')">Login</li>
                 <li @click="$modal.show('statistics')">Show all times</li>
                 <li @click="$modal.show('settings')"><i class="fal fa-cogs"></i></li>
             </ul>
@@ -41,19 +41,18 @@
             <AppSettings />
         </modal>
 
-        <modal v-if="user" name="usersettings" :width="300">
+        <modal name="user" :width="400" height="auto">
             <UserSettings />
         </modal>
 
-        <modal v-else name="login" :width="300">
-            <div id="auth-container"></div>
-        </modal>
+        <DialogModal />
     </div>
 </template>
 
 <script lang="ts">
 import Vue, { VueConstructor } from 'vue'
 import Modal from '~/components/Modals/Modal.vue'
+import DialogModal from '~/components/Modals/DialogModal.vue'
 import BackgroundAnimation from '~/components/BackgroundAnimation.vue'
 import AppSettings from '~/components/AppSettings.vue'
 import UserSettings from '~/components/Modals/UserSettings.vue'
@@ -65,6 +64,7 @@ export default Vue.extend({
   components: {
     BackgroundAnimation,
     Modal,
+    DialogModal,
     AppSettings,
     UserSettings,
     RecentTimes,
@@ -86,10 +86,6 @@ export default Vue.extend({
     user () {
       return this.$accessor.user.user
     },
-  },
-
-  created () {
-    this.$fireAuth.signInAnonymously()
   },
 })
 </script>
