@@ -1,5 +1,6 @@
 import { AvailableTimingMethods } from '~/components/TimingMethods'
 import shortid from 'shortid'
+import firebase from 'firebase'
 
 export default interface SolvingTime {
   id: string,
@@ -7,7 +8,7 @@ export default interface SolvingTime {
   decimals: number,
   dnf?: boolean,
   penalty?: boolean,
-  created: Date,
+  created: firebase.firestore.Timestamp,
   mode: string,
   timingMethod?: AvailableTimingMethods,
 }
@@ -19,7 +20,7 @@ export function createSolvingTime (mode: string): SolvingTime {
     decimals: 2,
     dnf: false,
     penalty: false,
-    created: new Date(),
+    created: firebase.firestore.Timestamp.now(),
     mode: mode,
   }
 }

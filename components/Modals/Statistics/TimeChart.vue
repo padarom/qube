@@ -6,11 +6,6 @@
             :width="1200"
             :style="{ width: 1200 }"
         />
-
-        <label for="showAllValues">
-            <input type="checkbox" name="showAllValues" id="showAllValues" v-model="showAllValues" />
-            Show all values
-        </label>
     </div>
 </template>
 
@@ -43,26 +38,19 @@ export default Vue.extend({
 
   data () {
     return {
-      showAllValues: false,
     }
   },
 
   components: { LineChart },
 
   methods: {
-    timeDisplay (value: string | number | undefined): string {
-      if (typeof value !== 'number') {
-        return ''
-      }
-
+    timeDisplay (value: any): string {
       return this.$options.filters?.timeDisplay(value)
     }
   },
 
   computed: {
     chartData (): ChartData {
-      const labels = this.times.map(time => time.created)
-
       const generateAverage = (list: SolvingTime[], label: string, color: string) => ({
         label,
         tension: 0.3,
@@ -75,13 +63,13 @@ export default Vue.extend({
         data: list
           .map(time => ({
             ...time,
-            x: labels.indexOf(time.created),
+            x: time.created.toDate(),
             y: time.milliseconds
           }))
       })
 
       return {
-        labels: [...labels.keys()],
+        // labels: [...labels.keys()],
         datasets: [
           {
             label: 'Individual times',
@@ -91,7 +79,7 @@ export default Vue.extend({
             borderColor: 'hsla(0, 90%, 60%, 0.7)',
             borderWidth: 2,
             showLine: false,
-            data: this.times.map(time => ({ ...time, y: time.milliseconds }))
+            data: this.times.map(time => ({ ...time, x: time.created.toDate(), y: time.milliseconds }))
           },
           generateAverage(this.averageOfFive, 'Average of 5', 'hsl(215, 60%, 50%)'),
           generateAverage(this.averageOfTwelve, 'Average of 12', 'hsl(90, 60%, 40%)')
@@ -100,40 +88,35 @@ export default Vue.extend({
     },
 
     options (): ChartOptions {
-      // Calculate the standard deviation so that we can restrict the chart
-      const mean = this.times.reduce((sum, cur) => sum + cur.milliseconds, 0) / this.times.length
-      const squaredDifferences = this.times.map(cur => Math.pow(cur.milliseconds - mean, 2))
-      const squaredMean = squaredDifferences.reduce((sum, cur) => sum + cur, 0) / this.times.length
-      const standardDeviation = Math.sqrt(squaredMean)
-
-      const firstTime = this.times.length ? this.times[0].milliseconds : 0
+      function getObject (item: Chart.ChartTooltipItem, data: Chart.ChartData): SolvingTime {
+        const { datasetIndex, index } = item
+        const datasets = data.datasets
+        return data.datasets![datasetIndex as number].data![index as number] as SolvingTime
+      }
 
       return {
         responsive: true,
         tooltips: {
           callbacks: {
-            label: item => this.timeDisplay(item.yLabel),
-            title: (items, object) => {
-              const { datasetIndex, index } = items[0]
-              const datasets = object.datasets
-              const value = object.datasets![datasetIndex as number].data![index as number] as SolvingTime
-
-              return moment(value.created).format('LLL')
+            label: (item, data) => {
+              const object = getObject(item, data)
+              return this.timeDisplay(object)
+            },
+            title: (items, data) => {
+              const object = getObject(items[0], data)
+              return moment(object.created.toDate()).format('LLL')
             }
           }
         },
         scales: {
           yAxes: [{
             ticks: {
-              min: this.showAllValues ? undefined : Math.max(firstTime - standardDeviation, 0),
-              max: this.showAllValues ? undefined : firstTime + standardDeviation,
-              callback: label => this.timeDisplay(parseInt(label))
+              callback: label => this.timeDisplay(parseInt(label)),
             }
           }],
           xAxes: [{
-            ticks: {
-              display: false
-            }
+            type: 'time',
+            distribution: 'linear',
           }]
         }
       }

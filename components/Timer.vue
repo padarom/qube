@@ -29,6 +29,7 @@ import Vue from 'vue'
 import TimingMethods, { AvailableTimingMethods } from './TimingMethods'
 import TimingState, { State, createTimingState } from '~/types/TimingState'
 import TimingMethod from './TimingMethods/TimingMethod.vue'
+import firebase from 'firebase'
 
 type TimingObject = {
   decimals: number,
@@ -110,7 +111,7 @@ export default Vue.extend({
     },
 
     async storeTime () {
-      this.currentSolve.time.created = new Date()
+      this.currentSolve.time.created = firebase.firestore.Timestamp.now()
 
       this.$store.dispatch('times/insert', this.currentSolve.time)
     },
