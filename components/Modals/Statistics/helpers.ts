@@ -1,5 +1,9 @@
 import SolvingTime from '~/types/SolvingTime'
 
+export function timeInMilliseconds (time: SolvingTime) {
+  return time.milliseconds + (time.penalty ? 2000 : 0)
+}
+
 export function getAverageOf (n: number, times: SolvingTime[]) {
   return times.reduce((acc, time) => {
     // Push the current time into the list

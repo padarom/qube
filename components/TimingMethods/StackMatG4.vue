@@ -115,9 +115,17 @@ export default IntervalBasedTimer.extend({
           }
 
           if (this.previousState.status === ' ' && state.status === 'I') {
+            // We need to take care of the case where a user resets the timer as it's running, as that
+            // shouldn't count as a 0 second solve.
+            if (!state.digits.some(digit => digit !== '0')) {
+              this.stopTimer()
+              return this.updateState({ state: State.READY })
+            }
+
             this.stopTimer()
             this.updateState({ state: State.FINISHED })
           }
+
           if (previousMilliseconds > milliseconds) {
             this.updateState({ state: State.READY })
           }

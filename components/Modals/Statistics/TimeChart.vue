@@ -13,7 +13,7 @@
 import Vue, { PropType } from 'vue'
 import moment from 'moment'
 import LineChart from './LineChart.vue'
-import { getAverageOf } from './helpers'
+import { getAverageOf, timeInMilliseconds } from './helpers'
 import SolvingTime from '~/types/SolvingTime'
 import { Line, mixins } from 'vue-chartjs'
 import { ChartOptions, ChartData } from 'chart.js'
@@ -61,15 +61,15 @@ export default Vue.extend({
         pointRadius: 5,
         pointBorderColor: 'transparent',
         data: list
+          .filter(item => !item.penalty && !item.dnf) // We don't want to include penalty times in our statistics calculations
           .map(time => ({
             ...time,
             x: time.created.toDate(),
-            y: time.milliseconds
+            y: timeInMilliseconds(time)
           }))
       })
 
       return {
-        // labels: [...labels.keys()],
         datasets: [
           {
             label: 'Individual times',
@@ -79,7 +79,11 @@ export default Vue.extend({
             borderColor: 'hsla(0, 90%, 60%, 0.7)',
             borderWidth: 2,
             showLine: false,
-            data: this.times.map(time => ({ ...time, x: time.created.toDate(), y: time.milliseconds }))
+            data: this.times.map(time => ({
+              ...time,
+              x: time.created.toDate(),
+              y: timeInMilliseconds(time)
+            }))
           },
           generateAverage(this.averageOfFive, 'Average of 5', 'hsl(215, 60%, 50%)'),
           generateAverage(this.averageOfTwelve, 'Average of 12', 'hsl(90, 60%, 40%)')
@@ -116,7 +120,7 @@ export default Vue.extend({
           }],
           xAxes: [{
             type: 'time',
-            distribution: 'linear',
+            distribution: 'series',
           }]
         }
       }
