@@ -8,13 +8,17 @@
                 {{ elapsed.minutes | padded }}:{{ elapsed.seconds | padded }}.{{ elapsed.decimals | padded(this.decimals) }}
             </h1>
 
-            <div class="adjustments" v-if="finished">
+            <div class="adjustments" v-if="finished && competitionMode">
                 <button @click="togglePenalty" :class="{ active: currentSolve.time.penalty }">+2</button>
                 <button @click="toggleDnf" :class="{ active: currentSolve.time.dnf }">DNF</button>
             </div>
         </div>
 
         <aside class="hint">
+            <div v-if="scramblesEnabled" class="scramble">
+              <p>{{ nextScramble }}</p>
+            </div>
+
             <component
               :is="timingMethodComponent"
               v-model="currentSolve"
@@ -30,6 +34,7 @@ import TimingMethods, { AvailableTimingMethods } from './TimingMethods'
 import TimingState, { State, createTimingState } from '~/types/TimingState'
 import TimingMethod from './TimingMethods/TimingMethod.vue'
 import firebase from 'firebase'
+import Scrambo from 'scrambo'
 
 type TimingObject = {
   decimals: number,
@@ -37,10 +42,13 @@ type TimingObject = {
   minutes: number
 }
 
+const scrambler = new Scrambo()
+
 export default Vue.extend({
   data () {
     return {
       currentSolve: createTimingState('3x3'),
+      nextScramble: scrambler.get()[0],
     }
   },
 
@@ -74,7 +82,15 @@ export default Vue.extend({
 
     timingMethodComponent (): typeof TimingMethod {
       return TimingMethods[this.selectedTimingMethod]
-    }
+    },
+
+    competitionMode (): boolean {
+      return this.$accessor.configuration.competitionMode
+    },
+
+    scramblesEnabled (): boolean {
+      return this.$accessor.configuration.scrambles
+    },
   },
 
   watch: {
@@ -111,6 +127,11 @@ export default Vue.extend({
     },
 
     async storeTime () {
+      if (this.scramblesEnabled) {
+        this.currentSolve.time.scramble = this.nextScramble
+        this.nextScramble = scrambler.get()[0]
+      }
+
       this.currentSolve.time.created = firebase.firestore.Timestamp.now()
 
       this.$store.dispatch('times/insert', this.currentSolve.time)
@@ -154,6 +175,17 @@ export default Vue.extend({
 
   .timer
     position: relative
+
+  .scramble
+    display: inline-block
+    font-size: 22px
+    opacity: 0.6
+    font-weight: 600
+    margin-bottom: 30px
+
+    p
+      text-align: center
+      margin: 0
 
   .timer h1
     margin: 0

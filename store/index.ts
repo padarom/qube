@@ -1,4 +1,5 @@
 import VuexEasyFirestore from 'vuex-easy-firestore'
+import VuexPersistence from 'vuex-persist'
 import { getAccessorType } from 'typed-vuex'
 import Vuex from 'vuex'
 
@@ -27,6 +28,11 @@ const easyFirestorePlugin = VuexEasyFirestore(
   { logging: true },
 )
 
+const vuexLocal = new VuexPersistence({
+  storage: window.localStorage,
+  modules: ['configuration'],
+})
+
 const store = new Vuex.Store({
   modules: {
     // Modules that are included in EasyFirestore cannot be
@@ -34,7 +40,10 @@ const store = new Vuex.Store({
     configuration,
     user,
   },
-  plugins: [easyFirestorePlugin],
+  plugins: [
+    easyFirestorePlugin,
+    vuexLocal.plugin,
+  ],
 })
 
 export default () => store

@@ -29,6 +29,7 @@
     "nuxt": "^2.11.0",
     "nuxt-fire": "^3.5.5",
     "nuxt-typed-vuex": "^0.1.15",
+    "scrambo": "^0.3.0",
     "shortid": "^2.2.14",
     "ts-node": "^8.3.0",
     "vue-chartjs": "^3.5.0",

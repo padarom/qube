@@ -12,6 +12,7 @@
         </div>
       </li>
     </ul>
+    <a href="#" @click.prevent="logout" v-if="user">Logout</a>
   </div>
 </template>
 
@@ -92,6 +93,10 @@ export default Vue.extend({
 
       await user.unlink(AuthProviders[method].providerId)
       this.$forceUpdate()
+    },
+
+    async logout () {
+      await this.$fireAuth.signOut()
     },
   },
 })

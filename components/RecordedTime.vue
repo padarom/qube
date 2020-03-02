@@ -1,7 +1,7 @@
 <template>
     <div class="recorded-time">
-        <span class="flag dnf" v-if="time.dnf">DNF</span>
-        <span class="flag penalty" v-if="time.penalty">+2</span>
+        <span class="flag dnf" v-if="competitionMode && time.dnf">DNF</span>
+        <span class="flag penalty" v-if="competitionMode && time.penalty">+2</span>
 
         <span class="time">
           <span class="accurate">{{ time | timeDisplay }}</span><span class="inaccurate" v-for="n in (3 - time.decimals)" :key="n">-</span>
@@ -10,15 +10,26 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
+import SolvingTime from '~/types/SolvingTime'
 
 export default Vue.extend({
   props: {
     time: {
-      type: Object,
-      required: true
-    }
-  }
+      type: Object as PropType<SolvingTime>,
+      required: true,
+    },
+  },
+
+  data () {
+    return {}
+  },
+
+  computed: {
+    competitionMode (): boolean {
+      return this.$accessor.configuration.competitionMode
+    },
+  },
 })
 </script>
 

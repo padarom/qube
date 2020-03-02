@@ -11,6 +11,7 @@ export default interface SolvingTime {
   created: firebase.firestore.Timestamp,
   mode: string,
   timingMethod?: AvailableTimingMethods,
+  scramble?: string,
 }
 
 export function createSolvingTime (mode: string): SolvingTime {

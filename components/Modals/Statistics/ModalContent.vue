@@ -103,6 +103,9 @@ export default Vue.extend({
 .statistics
   text-align: left
 
+.chart
+  margin-bottom: 20px
+
 .list
   max-height: 300px
   overflow-y: scroll

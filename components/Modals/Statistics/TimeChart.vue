@@ -121,6 +121,9 @@ export default Vue.extend({
           xAxes: [{
             type: 'time',
             distribution: 'series',
+            ticks: {
+              display: false,
+            },
           }]
         }
       }
