@@ -10,11 +10,15 @@ export function getAverageOf (n: number, times: SolvingTime[]) {
     acc.times.push(time)
 
     // Remove previous entries bigger than 5
-    if (acc.times.length > n) acc.times.shift()
+    if (acc.times.length > n && n > 0) acc.times.shift()
 
-    if (acc.times.length === n) {
+    if (acc.times.length === n || n === 0) {
       let total = acc.times.reduce((acc, cur) => acc + cur.milliseconds, 0)
-      let average = Math.round(total / n)
+      let average = Math.round(total / acc.times.length)
+
+      if (n === 0) {
+        console.log(acc.times.length, total)
+      }
 
       acc.averages.push({ ...time, milliseconds: average })
     }
