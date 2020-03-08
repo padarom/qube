@@ -1,42 +1,45 @@
 <template>
+  <modal name="statistics" :width="1000" height="auto">
     <div id="statistics-modal">
-        <section class="chart">
-            <TimeChart :times="times" :averageOfFive="averagesOfFive" :averageOfTwelve="averagesOfTwelve" />
-        </section>
+      <section class="chart">
+        <TimeChart :times="times" :averageOfFive="averagesOfFive" :averageOfTwelve="averagesOfTwelve" />
+      </section>
 
-        <section class="textual">
-            <div class="column statistics">
-                <dl>
-                    <dt v-if="times.length">Best time</dt>
-                    <dd v-if="times.length">{{ bestTime.milliseconds | timeDisplay }}</dd>
+      <section class="textual">
+        <div class="column statistics">
+          <dl>
+            <dt v-if="times.length">Best time</dt>
+            <dd v-if="times.length">{{ bestTime.milliseconds | timeDisplay }}</dd>
 
-                    <dt>Average of 5</dt>
-                    <dd>
-                        <div v-if="lastAverageOfFive">{{ lastAverageOfFive.milliseconds | timeDisplay }}</div>
-                        <div v-if="bestAverageOfFive">Best: {{ bestAverageOfFive.milliseconds | timeDisplay }}</div>
-                    </dd>
+            <dt>Average of 5</dt>
+            <dd>
+              <div v-if="lastAverageOfFive">{{ lastAverageOfFive.milliseconds | timeDisplay }}</div>
+              <div v-if="bestAverageOfFive">Best: {{ bestAverageOfFive.milliseconds | timeDisplay }}</div>
+            </dd>
 
-                    <dt>Average of 12</dt>
-                    <dd>
-                        <div v-if="lastAverageOfTwelve">{{ lastAverageOfTwelve.milliseconds | timeDisplay }}</div>
-                        <div v-if="bestAverageOfTwelve">Best: {{ bestAverageOfTwelve.milliseconds | timeDisplay }}</div>
-                    </dd>
-                </dl>
-            </div>
+            <dt>Average of 12</dt>
+            <dd>
+              <div v-if="lastAverageOfTwelve">{{ lastAverageOfTwelve.milliseconds | timeDisplay }}</div>
+              <div v-if="bestAverageOfTwelve">Best: {{ bestAverageOfTwelve.milliseconds | timeDisplay }}</div>
+            </dd>
+          </dl>
+        </div>
 
-            <div class="column list">
-                <ul>
-                    <li v-for="time in reverseTimes" :key="time.id">
-                        <RecordedTime :time="time" />
-                    </li>
-                </ul>
-            </div>
-        </section>
+        <div class="column list">
+          <ul>
+            <li v-for="time in reverseTimes" :key="time.id">
+              <RecordedTime :time="time" />
+            </li>
+          </ul>
+        </div>
+      </section>
     </div>
+  </modal>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
+import Modal from '~/components/Modals/Modal.vue'
 import RecordedTime from '~/components/RecordedTime.vue'
 import TimeChart from './TimeChart.vue'
 import { minBy } from 'lodash'
@@ -45,7 +48,9 @@ import SolvingTime from '~/types/SolvingTime'
 
 export default Vue.extend({
   components: {
-    RecordedTime, TimeChart
+    RecordedTime,
+    TimeChart,
+    Modal,
   },
 
   computed: {

@@ -33,42 +33,34 @@
 
         <RecentTimes />
 
-        <modal name="statistics" :width="1000" height="auto">
-            <StatisticsModalContent />
-        </modal>
-
-        <modal name="settings" :width="640" height="auto">
-            <AppSettings />
-        </modal>
-
-        <modal name="user" :width="400" height="auto">
-            <UserSettings />
-        </modal>
-
+        <StatisticsModal />
+        <AppSettingsModal />
+        <UserSettingsModal />
+        <TimeDetailsModal />
         <DialogModal />
     </div>
 </template>
 
 <script lang="ts">
 import Vue, { VueConstructor } from 'vue'
-import Modal from '~/components/Modals/Modal.vue'
 import DialogModal from '~/components/Modals/DialogModal.vue'
 import BackgroundAnimation from '~/components/BackgroundAnimation.vue'
-import AppSettings from '~/components/AppSettings.vue'
-import UserSettings from '~/components/Modals/UserSettings.vue'
-import StatisticsModalContent from '~/components/Modals/Statistics/ModalContent.vue'
+import AppSettingsModal from '~/components/Modals/Settings/AppSettings.vue'
+import UserSettingsModal from '~/components/Modals/Settings/UserSettings.vue'
+import TimeDetailsModal from '~/components/Modals/TimeDetails/TimeDetailsModal.vue'
+import StatisticsModal from '~/components/Modals/Statistics/StatisticsModal.vue'
 import RecentTimes from '~/components/RecentTimes.vue'
 import Timer from '~/components/Timer.vue'
 
 export default Vue.extend({
   components: {
     BackgroundAnimation,
-    Modal,
     DialogModal,
-    AppSettings,
-    UserSettings,
+    AppSettingsModal,
+    UserSettingsModal,
+    TimeDetailsModal,
     RecentTimes,
-    StatisticsModalContent,
+    StatisticsModal,
     Timer,
   },
 

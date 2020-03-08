@@ -1,23 +1,26 @@
 <template>
-  <div id="user-settings">
-    Log in using any of these services. You can link accounts together after logging in.
-    <ul>
-      <li v-for="(faIcon, key) in providers" :key="key">
-        <div class="social-login" @click.prevent="login(key)" :class="{ [key]: true, linked: isLinked(key) }">
-          <i class="fab" :class="`fa-${faIcon}`"></i>
+  <modal name="user" :width="400" height="auto">
+    <div id="user-settings">
+      Log in using any of these services. You can link accounts together after logging in.
+      <ul>
+        <li v-for="(faIcon, key) in providers" :key="key">
+          <div class="social-login" @click.prevent="login(key)" :class="{ [key]: true, linked: isLinked(key) }">
+            <i class="fab" :class="`fa-${faIcon}`"></i>
 
-          <a href="#" class="unlink" v-if="isLinked(key)" @click.prevent.stop="unlink(key)">
-            Unlink
-          </a>
-        </div>
-      </li>
-    </ul>
-    <a href="#" @click.prevent="logout" v-if="user">Logout</a>
-  </div>
+            <a href="#" class="unlink" v-if="isLinked(key)" @click.prevent.stop="unlink(key)">
+              Unlink
+            </a>
+          </div>
+        </li>
+      </ul>
+      <a href="#" @click.prevent="logout" v-if="user">Logout</a>
+    </div>
+  </modal>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
+import Modal from '~/components/Modals/Modal.vue'
 import firebase from 'firebase'
 import mobile from 'is-mobile'
 
@@ -29,6 +32,10 @@ const AuthProviders = {
 }
 
 export default Vue.extend({
+  components: {
+    Modal,
+  },
+
   data () {
     return {
       providers: {

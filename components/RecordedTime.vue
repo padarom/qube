@@ -1,12 +1,12 @@
 <template>
-    <div class="recorded-time">
-        <span class="flag dnf" v-if="competitionMode && time.dnf">DNF</span>
-        <span class="flag penalty" v-if="competitionMode && time.penalty">+2</span>
+  <div class="recorded-time" @click="editTime">
+    <span class="flag dnf" v-if="time.dnf">DNF</span>
+    <span class="flag penalty" v-if="time.penalty">+2</span>
 
-        <span class="time">
-          <span class="accurate">{{ time | timeDisplay }}</span><span class="inaccurate" v-for="n in (3 - time.decimals)" :key="n">-</span>
-        </span>
-    </div>
+    <span class="time">
+      <span class="accurate">{{ time | timeDisplay }}</span><span class="inaccurate" v-for="n in (3 - time.decimals)" :key="n">-</span>
+    </span>
+  </div>
 </template>
 
 <script lang="ts">
@@ -28,6 +28,12 @@ export default Vue.extend({
   computed: {
     competitionMode (): boolean {
       return this.$accessor.configuration.competitionMode
+    },
+  },
+
+  methods: {
+    editTime () {
+      this.$modal.show('edit-time', this.time)
     },
   },
 })
