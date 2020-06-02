@@ -5,7 +5,7 @@ const config: Configuration = {
 
   /*
   ** Headers of the page
-  */ 
+  */
   head: {
     title: 'Qube',
     meta: [
@@ -51,6 +51,7 @@ const config: Configuration = {
     '@nuxtjs/pwa',
     '@nuxtjs/eslint-module',
     '@nuxtjs/style-resources',
+    'portal-vue/nuxt',
     [
       '@nuxtjs/google-adsense', {
         id: 'ca-pub-2592802788414327',
@@ -74,7 +75,7 @@ const config: Configuration = {
         }
     }],
   ],
-  
+
   buildModules: [
     '@nuxt/typescript-build',
     'nuxt-typed-vuex',

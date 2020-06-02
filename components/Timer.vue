@@ -5,7 +5,9 @@
                 {{ currentSolve.time | timeDisplay }}
             </h1>
             <h1 class="time" v-else>
-                {{ elapsed.minutes | padded }}:{{ elapsed.seconds | padded }}.{{ elapsed.decimals | padded(this.decimals) }}
+                <portal-target name="timer">
+                    {{ elapsed.minutes | padded }}:{{ elapsed.seconds | padded }}.{{ elapsed.decimals | padded(this.decimals) }}
+                </portal-target>
             </h1>
 
             <div class="adjustments" v-if="finished && competitionMode">

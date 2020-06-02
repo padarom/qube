@@ -42,6 +42,14 @@
           </li>
 
           <li>
+            <input type="radio" id="manualinput" :value="timingMethods.ManualInput" v-model="timingMethod">
+            <label for="manualinput">
+              <span class="title">Manual Input</span>
+              <span class="description">Track your times by some other means and type them in once you're done.</span>
+            </label>
+          </li>
+
+          <li>
             <input type="radio" id="touch" :value="timingMethods.Touch" v-model="timingMethod">
             <label for="touch">
               <span class="title">Touch</span>
