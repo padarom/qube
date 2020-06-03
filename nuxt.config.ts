@@ -51,6 +51,7 @@ const config: Configuration = {
     '@nuxtjs/pwa',
     '@nuxtjs/eslint-module',
     '@nuxtjs/style-resources',
+    '@nuxtjs/toast',
     'portal-vue/nuxt',
     [
       '@nuxtjs/google-adsense', {
@@ -85,6 +86,17 @@ const config: Configuration = {
     stylus: [
       'assets/styl/variables.styl'
     ]
+  },
+
+  /**
+   * See https://github.com/nuxt-community/modules/tree/master/packages/toast
+   */
+  toast: {
+    position: 'top-center',
+    duration: 3500,
+    keepOnHover: true,
+    iconPack: 'fontawesome',
+    containerClass: 'qube',
   },
 
   /*

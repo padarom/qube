@@ -1,10 +1,11 @@
 <template>
   <div>
-    Enter your time in the field above and press <kbd>Enter</kbd> to confirm.
+    Enter your time in the field above and press <kbd>Enter</kbd> to confirm.<br>
+    Press <kbd>Enter</kbd> again to reset.
 
     <portal to="timer">
-      <form @submit.prevent="storeInput" autocomplete="off">
-        <input id="manual-input" v-model="input" placeholder="00.000" />
+      <form @submit.prevent autocomplete="off">
+        <input id="manual-input" v-model="input" placeholder="00.000" ref="timeInput" autofocus />
       </form>
     </portal>
   </div>
@@ -21,8 +22,13 @@ export default TimingMethod.extend({
     }
   },
 
-  created () {
-    this.updateState({ state: State.READY })
+  mounted () {
+    this.reset()
+    window.addEventListener('keyup', this.keyup, true)
+  },
+
+  beforeDestroy () {
+    window.removeEventListener('keyup', this.keyup, true)
   },
 
   computed: {
@@ -48,8 +54,10 @@ export default TimingMethod.extend({
     storeInput () {
       const time = this.parsedTime
       if (!time) {
-        // TODO: Add error message
-        return
+        return this.$toast.error(
+          '<span>Your entered time has to be in the format <code>00:00.000</code> or <code>00.000</code>.</span>',
+          { icon: 'fa-exclamation-triangle' }
+        )
       }
 
       this.setTime(time.time)
@@ -57,6 +65,31 @@ export default TimingMethod.extend({
 
       this.updateState({ state: State.FINISHED })
     },
+
+    reset () {
+      this.updateState({ state: State.READY })
+      this.input = ''
+
+      // @see https://portal-vue.linusb.org/guide/caveats.html#refs
+      this.$nextTick(() => {
+        this.$nextTick(() => {
+          const input = this.$refs.timeInput as HTMLElement
+          input.focus()
+        })
+      })
+    },
+
+    keyup (event: KeyboardEvent) {
+      // Only allow resets with space or enter
+      if (event.key !== 'Enter') return
+
+      // Only allow resets when we are already finished
+      if (this.value.state === State.FINISHED) {
+        this.reset()
+      } else {
+        this.storeInput()
+      }
+    }
   },
 })
 </script>
