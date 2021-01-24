@@ -32,13 +32,13 @@ export default Vue.extend({
       createdObjects: 0,
       objects: [] as ParticleObject[],
       delta: 0,
-      maxParticleNumber: 40,
+      maxParticleNumber: 30,
     }
   },
 
   mounted () {
     window.setInterval(this.createParticles.bind(this), 600)
-    window.setInterval(this.advanceParticles.bind(this), 18)
+    window.setInterval(this.advanceParticles.bind(this), 40)
   },
 
   methods: {

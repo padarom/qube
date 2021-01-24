@@ -4,6 +4,7 @@
             <h1 class="time" v-if="finished">
                 {{ currentSolve.time | timeDisplay }}
             </h1>
+
             <h1 class="time" v-else>
                 <portal-target name="timer">
                     {{ elapsed.minutes | padded }}:{{ elapsed.seconds | padded }}.{{ elapsed.decimals | padded(this.decimals) }}
@@ -178,6 +179,14 @@ export default Vue.extend({
   .timer
     position: relative
 
+    h1
+      margin: 0
+      font-size: 18vw
+      max-width: calc(100vw - 50px)
+
+      @media (min-width: 570px)
+        font-size: 100px
+
   .scramble
     display: inline-block
     font-size: 22px
@@ -189,18 +198,28 @@ export default Vue.extend({
       text-align: center
       margin: 0
 
-  .timer h1
-    margin: 0
-    font-size: 100px
-
   .adjustments
-    position: absolute
-    top: 0
-    right: -90px
     display: flex
-    flex-direction: column
-    justify-content: center
-    height: 100%
+
+    @media (min-width: 570px)
+      position: absolute
+      top: 0
+      right: -90px
+      flex-direction: column
+      justify-content: center
+      height: 100%
+
+    @media (max-width: 570px)
+      flex-direction: row
+      justify-content: center
+      margin-top: 20px
+
+      button::before, button::after
+        content: "("
+        opacity: 0.5
+
+      button::after
+        content: ")"
 
   .adjustments button
     background: none
