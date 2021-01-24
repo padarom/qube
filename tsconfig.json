@@ -26,8 +26,8 @@
       "@types/node",
       "@nuxt/types",
       "@nuxtjs/toast",
-      "nuxt-i18n",
-      "nuxt-fire"
+      "@nuxtjs/firebase",
+      "nuxt-i18n"
     ]
   },
   "exclude": [

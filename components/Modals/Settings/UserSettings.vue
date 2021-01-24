@@ -56,7 +56,7 @@ export default Vue.extend({
   methods: {
     isLinked (method: keyof typeof AuthProviders): boolean {
       if (!this.user) return false
-      const user = this.$fireAuth.currentUser as firebase.User
+      const user = this.$fire.auth.currentUser as firebase.User
 
       return user.providerData.some(info => {
         if (!info) return false
@@ -70,7 +70,7 @@ export default Vue.extend({
 
       const provider = AuthProviders[method]
       try {
-        const response = await (mobile() ? this.$fireAuth.signInWithRedirect(provider) : this.$fireAuth.signInWithPopup(provider))
+        const response = await (mobile() ? this.$fire.auth.signInWithRedirect(provider) : this.$fire.auth.signInWithPopup(provider))
       } catch (e) {
         console.error(e)
       }
@@ -81,7 +81,7 @@ export default Vue.extend({
     async link (method: keyof typeof AuthProviders) {
       if (this.isLinked(method)) return
 
-      const user = this.$fireAuth.currentUser
+      const user = this.$fire.auth.currentUser
       if (!user) return
 
       const provider = AuthProviders[method]
@@ -95,7 +95,7 @@ export default Vue.extend({
     },
 
     async unlink (method: keyof typeof AuthProviders) {
-      const user = this.$fireAuth.currentUser
+      const user = this.$fire.auth.currentUser
       if (!user) return
 
       await user.unlink(AuthProviders[method].providerId)
@@ -103,7 +103,7 @@ export default Vue.extend({
     },
 
     async logout () {
-      await this.$fireAuth.signOut()
+      await this.$fire.auth.signOut()
     },
   },
 })

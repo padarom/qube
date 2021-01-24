@@ -1,7 +1,7 @@
 import { Plugin } from '@nuxt/types'
 
 const authPlugin: Plugin = ({ app, store }) => {
-  app.$fireAuth.onAuthStateChanged((user) => {
+  app.$fire.auth.onAuthStateChanged((user) => {
     app.$accessor.user.setUser(user)
 
     if (user) {

@@ -3,6 +3,10 @@ import { Configuration } from '@nuxt/types'
 const config: Configuration = {
   mode: 'spa',
 
+  server: {
+    host: '0.0.0.0',
+  },
+
   /*
   ** Headers of the page
   */
@@ -58,7 +62,7 @@ const config: Configuration = {
         id: 'ca-pub-2592802788414327',
       }
     ],
-    ['nuxt-fire', {
+    ['@nuxtjs-firebase', {
         config: {
           apiKey: 'AIzaSyBykYa61kZAhjQTmUUYjLIVN7UvUeYfXrc',
           authDomain: 'qube-timer.firebaseapp.com',

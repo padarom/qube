@@ -104,4 +104,5 @@ export default TimingMethod.extend({
     background: transparent
     padding: 300px 0
     outline: none
+    max-width: 100%
 </style>
